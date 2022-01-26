@@ -9,7 +9,6 @@ interface propsType {
 
 export default memo(function MessageItem(props: propsType) {
     const { name, avatar, description } = props.user;
-    console.log(name);
     
     const history = useHistory();
     const goToMessageDetail = () => {

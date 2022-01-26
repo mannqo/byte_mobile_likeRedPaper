@@ -4,11 +4,11 @@ import styled from 'styled-components'
 export const RightPropover = () => {
 
     return (
-        <div className='rightPropover'>
+        <MyDialogRight>
             <Popover content='Hello World' placement={'right'} defaultVisible visible>
                 <Avatar src={demoAvatarImages[0]} style={{ borderRadius: '50%', '--size': '60px' }} />
             </Popover>
-        </div>
+        </MyDialogRight>
     )
 }
 
@@ -27,6 +27,12 @@ const demoAvatarImages = [
     'https://images.unsplash.com/photo-1548532928-b34e3be62fc6?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
 ]
 const MyDialog = styled.div`
+    padding: 10px;
+    padding-bottom: 0;
     display: flex;
     justify-content: flex-end;
+`
+const MyDialogRight = styled.div`
+    padding: 10px;
+    padding-bottom: 0;
 `

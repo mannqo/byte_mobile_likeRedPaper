@@ -1,5 +1,6 @@
 import { Redirect } from "react-router-dom";
-import MessageDetail from "../page/MessageDetail";
+import ChatRecord from "../page/ChatRecord"; 
+import CreateChatting from "../page/CreateChatting";
 import Search from "../page/Search";
 import Tabbar from "../page/Tabbar";
 import HomePage from "../page/Tabbar/HomePage";
@@ -41,11 +42,15 @@ const routes = [
     {
         path: "/message/detail",
         exact: true,
-        component: MessageDetail,
+        component: ChatRecord,
     },
     {
         path: "/search",
         component: Search,
+    },
+    {
+        path: "/createChatting",
+        component: CreateChatting   
     }
 ]
 

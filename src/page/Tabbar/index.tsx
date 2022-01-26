@@ -70,7 +70,10 @@ const Tabbar = (props: any) => {
 export default Tabbar;
 
 const TabbarContainer = styled.div` 
-    .body {
-        height: 90vh;
+    .bottom {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
     }
+    
 ` 

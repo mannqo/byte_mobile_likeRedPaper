@@ -1,17 +1,20 @@
 import { memo } from 'react'
 import { Space, NavBar } from 'antd-mobile'
-import { HeartFill, MessageFill, TeamFill, MoreOutline } from 'antd-mobile-icons'
+import { HeartFill, MessageFill, TeamFill } from 'antd-mobile-icons'
 import styled from 'styled-components'
 import MessageList from '../../../component/MessageList'
+import { useHistory } from 'react-router-dom'
 
 
 
 export default memo(function Message() {
+    const history = useHistory();
+    const createChatting = () => {
+        history.push('/createChatting');
+    }
     const right = (
-        <div style={{ fontSize: 20 }}>
-            <Space>
-                <MoreOutline />
-            </Space>
+        <div onClick={createChatting} style={{ fontSize: 16 }}>
+            创建聊天
         </div>
     )
 
@@ -20,7 +23,6 @@ export default memo(function Message() {
             <NavBar right={right}>
                 消息
             </NavBar>
-
             <Space wrap style={{ fontSize: 36 }}>
                 <IconContainer>
                     <HeartFill color='#ed7370'></HeartFill>
