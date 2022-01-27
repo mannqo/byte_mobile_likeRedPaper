@@ -13,15 +13,15 @@ css样式：styled-component库
 
 ### 目录结构
 非page的组件写在component里面，同一类组件放在同一个文件夹中
-├──src
-|   ├──component
-|   ├──page 页面
-|   |   ├──Tabbar 
-|   |   |   ├──HomePage 主页
-|   |   |   ├──Message 消息页面
-|   |   |   ├──PersonalCenter 个人主页
-|   ├──routes存放路由
-|   |   ├──index.tsx 如果你新增了页面，可以把在这里配置
++ ├──src
++ |   ├──component
++ |   ├──page 页面
++ |   |   ├──Tabbar 
++ |   |   |   ├──HomePage 主页
++ |   |   |   ├──Message 消息页面
++ |   |   |   ├──PersonalCenter 个人主页
++ |   ├──routes存放路由
++ |   |   ├──index.tsx 如果你新增了页面，可以把在这里配置
 比如说配置主页的路由，要注意，路径前缀为/tabbar/home,在子组件中进行配置，在该组件从props中取出，再用renderRoutes进行渲染；具体百度~~~
 
 ### 页面page
