@@ -1,24 +1,29 @@
 import { List } from 'antd-mobile'
 import { useEffect, useState } from 'react';
 import MessageItem from './MessageItem';
- 
-const io = require('socket.io-client')
-// const socket = io.connect('ws://localhost')
-const MessageList = () => {
-    useEffect(() => {
-        socket.on("get-ChatList", (data) => {
-            console.log(data);
-        })
-        // const ws = new WebSocket('ws://localhost:3000/getChatList');
-        // const userId = 1;
-        // ws.onopen = () => {
-        //     ws.send(userId);
-        // }
-        // ws.onmessage = (e) => {
-        //     console.log(e);
-        // }
 
-    }, [])
+const MessageList = () => {
+    let data = null;
+    const [charList, setChatList] = useState([]);
+    useEffect(() => {
+        const ws = new WebSocket('ws://localhost:3000/getChatList');
+        ws.addEventListener('message',(e)=>{
+            console.log(JSON.parse(e.data));
+        })
+        const userId = 2;
+        ws.onopen = () => {
+            ws.send(userId);
+        }
+        ws.onmessage = (e) => {
+            data = JSON.parse(e.data);
+            console.log(data);
+            setChatList(data);
+        }
+        return () => {
+            ws.close();
+        }
+
+    }, [data])
     return (
         <List>
             {
