@@ -6,15 +6,12 @@ const MessageList = () => {
     let data = null;
     const [charList, setChatList] = useState([]);
     useEffect(() => {
-        const ws = new WebSocket('ws://localhost:3000/getChatList');
-        ws.addEventListener('message',(e)=>{
-            console.log(JSON.parse(e.data));
-        })
-        const userId = 2;
+        const ws = new WebSocket('ws://101.33.245.208:8080/getChatList'); 
+        const userId = 1;
         ws.onopen = () => {
             ws.send(userId);
         }
-        ws.onmessage = (e) => {
+        ws.onmessage = (e) => { 
             data = JSON.parse(e.data);
             console.log(data);
             setChatList(data);
@@ -24,6 +21,7 @@ const MessageList = () => {
         }
 
     }, [data])
+    console.log(charList);
     return (
         <List>
             {
