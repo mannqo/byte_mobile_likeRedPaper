@@ -1,0 +1,10 @@
+.leftDialog {
+    padding: 10px;
+    padding-bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+.rightDialog {
+    padding: 10px;
+    padding-bottom: 0;
+}

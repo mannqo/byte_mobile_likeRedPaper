@@ -4,7 +4,7 @@ import { Input } from 'antd-mobile'
 const MessageItem = () => {
     const [value, setValue] = useState('')
     // 提交消息
-    const submitMessage = (e: any) => {
+    const submitMessage = (e) => {
         setValue('')
     }
     return (

@@ -3,19 +3,16 @@ import React, { memo } from 'react'
 import { useHistory } from 'react-router-dom';
 
 
-interface propsType {
-    user: any;
-}
 
-export default memo(function MessageItem(props: propsType) {
-    const { name, avatar, description } = props.user;
-    
+export default memo(function MessageItem(props) {
+    const { nickname, avatar, description, userId } = props.user;
+
     const history = useHistory();
     const goToMessageDetail = () => {
-        history.push('/message/detail');
+        history.push('/message/detail?receiverId=' + userId);
     }
     return (
-        <List.Item 
+        <List.Item
             prefix={
                 <Image
                     src={avatar}
@@ -28,7 +25,7 @@ export default memo(function MessageItem(props: propsType) {
             description={description}
             onClick={goToMessageDetail}
         >
-            {name}
+            {nickname}
         </List.Item>
     )
 })
