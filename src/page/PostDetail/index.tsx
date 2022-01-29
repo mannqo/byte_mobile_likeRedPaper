@@ -16,11 +16,14 @@ import styled from "styled-components";
 import MyAvatar from "./component/MyAvatar";
 import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
+import { getArticleById, likeArticle, starArticle, unlikeArticle, unstarArticle } from "../../services/article";
+import { cancelFollow, followUser, getBaseUserInfo } from "../../services/users";
+import { postReview } from "../../services/review";
 
 type UserInfo = {
     avatar: string,
-    userName: string,
-    uid: number,
+    nickname: string,
+    userId: number,
 }
 
 type NumOrString = number | string;
@@ -31,20 +34,23 @@ type Article = {
     tags: string[],
     likes: NumOrString,
     stars: NumOrString,
-    reviews: number,
+    reviews: NumOrString,
     postDate: string,
-    uuid: string
+    articleId: number
 }
 type Review = {
-    avatar: string,
-    userName: string,
-    uid: number,
+    authorId: number,
+    authorInfo: UserInfo,
     content: string,
-    likes: number,
+    likes: NumOrString,
     postDate: string,
-    uuid: string,
+    reviewId: number,
+    replyToUserId: number,
+    replyToArticleId: number,
+    parentReviewId?: number,
     reviewList: Review[]
 }
+export type { UserInfo, Article, Review };
 
 export default function PostDetail() {
     const articleId = 2;
@@ -60,18 +66,18 @@ export default function PostDetail() {
         stars: 0,
         reviews: 0,
         postDate: "",
-        uuid: ""
+        articleId: 0
     });
     let [reviews, setReviews] = useState<Review[]>([]);
-    let [userInfo, setUserInfo] = useState<UserInfo>({
-        avatar: "",
-        userName: "",
-        uid: 0
-    });
+    let userInfo = {
+        avatar: "https://joeschmoe.io/api/v1/random",
+        nickname: "张三",
+        userId: 1
+    };
     let [authorInfo, setAuthorInfo] = useState<UserInfo>({
         avatar: "",
-        userName: "",
-        uid: 0
+        nickname: "",
+        userId: 0
     });
     let [followed, setFollowed] = useState(false);
     let [liked, setLiked] = useState(false);
@@ -82,10 +88,9 @@ export default function PostDetail() {
     let [hasMoreReviews, setHasMoreReviews] = useState(true);
     // 评论发布相关
     let [inputPlaceHolder, setInputPlaceHolder] = useState('喜欢就给个评论支持一下~');
-    let [reviewTo, setReviewTo] = useState({
-        uid: 0,
-        uuid: '',
-        replyToArticle: false,
+    type ReviewTo = { userId: number, parentReviewId?: number };
+    let [reviewTo, setReviewTo] = useState<ReviewTo>({
+        userId: 0
     });
 
     // Effect
@@ -101,16 +106,40 @@ export default function PostDetail() {
 
     // 刷新页面
     const refresh = async () => {
-        
-        // 还原是否有更多评论的状态
-        setHasMoreReviews(true);
+        try {
+            const json = await getArticleById({ articleId });
+            const reviewJson = json.article.reviewList as Review[];
+            for (const reviewItem of reviewJson) {
+                await fillReviewAuthorInfo(reviewItem);
+            }
+            const authorJson = (await getBaseUserInfo({ userId: json.article.authorId })).user;
+            authorJson.userId = json.article.authorId;
+            // 排序
+            sorter(reviewJson);
+            reviewJson.forEach(function f(item) {
+                sorter(item.reviewList);
+            })
+            // 格式化
+            converter(json.article);
+            reviewJson.forEach(function f(item) {
+                converter(item);
+                item.reviewList.forEach(f);
+            })
+            setArticle(json.article);
+            setReviews(reviewJson);
+            setAuthorInfo(authorJson);
+            // 还原是否有更多评论的状态
+            setHasMoreReviews(true);
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     // 加载更多评论
     const loadMoreReviews = async () => {
-        Toast.show('正在加载更多评论...');
+        // Toast.show('正在加载更多评论...');
         await sleep(2000);
-        Toast.show('加载完成');
+        // Toast.show('加载完成');
         setHasMoreReviews(false);
     }
 
@@ -120,17 +149,26 @@ export default function PostDetail() {
     }
 
     // 关注文章作者的按钮
-    const followBtn = () => {
-        if (followed) {
-            // 取消关注
-            Dialog.confirm({
-                content: '是否要取消关注？',
-                onConfirm: () => setFollowed(false),
-                closeOnMaskClick: true
-            })
-        } else {
-            // 关注
-            setFollowed(true);
+    const followBtn = async () => {
+        try {
+
+            if (followed) {
+                // 取消关注
+                Dialog.confirm({
+                    content: '是否要取消关注？',
+                    onConfirm: async () => {
+                        await cancelFollow({ userId: userInfo.userId, followerId: authorInfo.userId });
+                        setFollowed(false);
+                    },
+                    closeOnMaskClick: true
+                })
+            } else {
+                // 关注
+                await followUser({ userId: userInfo.userId, followerId: authorInfo.userId });
+                setFollowed(true);
+            }
+        } catch (err) {
+            Toast.show((err as Error).message);
         }
     }
 
@@ -150,25 +188,41 @@ export default function PostDetail() {
     }
 
     // 喜欢按钮
-    const likeBtn = () => {
-        Toast.show((liked ? '取消' : '') + '点赞');
-        setLiked(!liked);
+    const likeBtn = async () => {
+        try {
+            if (liked) {
+                await unlikeArticle({ userId: userInfo.userId, articleId: articleId });
+            } else {
+                await likeArticle({ userId: userInfo.userId, articleId: articleId });
+            }
+            setLiked(!liked);
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     // 收藏按钮
-    const starBtn = () => {
-        Toast.show((stared ? '取消' : '') + '收藏');
-        setStared(!stared);
+    const starBtn = async () => {
+        try {
+            if (stared) {
+                await unstarArticle({ userId: userInfo.userId, articleId: articleId });
+            } else {
+                await starArticle({ userId: userInfo.userId, articleId: articleId });
+            }
+            setStared(!stared);
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     // 打开评论弹出层
-    const reviewBtn = (uid: number, uuid: string, replyToArticle: boolean, userName?: string) => {
-        if (replyToArticle) {
-            setInputPlaceHolder("喜欢就给个评论支持一下~");
-        } else {
+    const reviewBtn = (userId: number, userName?: string, parentReviewId?: number) => {
+        if (userName) {
             setInputPlaceHolder(`回复@${userName}：`);
+        } else {
+            setInputPlaceHolder("喜欢就给个评论支持一下~");
         }
-        setReviewTo({ uid, uuid, replyToArticle });
+        setReviewTo({ userId, parentReviewId });
         setPopupVisible(true);
         const input = document.querySelector('.popup textarea');
         if (input instanceof HTMLElement) {
@@ -178,8 +232,21 @@ export default function PostDetail() {
     }
 
     // 发布评论
-    const postBtn = () => {
-        Toast.show(`向${reviewTo.replyToArticle ? '文章' : '用户评论'}发布评论，发布给uid=${reviewTo.uid}，uuid=${reviewTo.uuid}，用户uid=${userInfo.uid}，发布内容="${inputValue}"`);
+    const postBtn = async () => {
+        try {
+            await postReview({
+                replyToUserId: reviewTo.userId,
+                replyToArticleId: articleId,
+                parentReviewId: reviewTo.parentReviewId,
+                authorId: userInfo.userId,
+                content: inputValue,
+            });
+            setInputValue('');
+            Toast.show('发布成功');
+            refresh();
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     // 顶栏右边的关注和分享按钮
@@ -230,22 +297,22 @@ export default function PostDetail() {
                     className="top"
                     align="center"
                     style={{ cursor: 'pointer' }}
-                    onClick={() => gotoUserPage(authorInfo.userName)}
+                    onClick={() => gotoUserPage(authorInfo.nickname)}
                 >
                     <MyAvatar src={authorInfo.avatar} />
-                    <span style={{ fontSize: '1rem' }}>{authorInfo.userName}</span>
+                    <span style={{ fontSize: '1rem' }}>{authorInfo.nickname}</span>
                 </Space>
             </NavBar>
             {/* 主体（文章详情&评论区） */}
             <PullToRefresh onRefresh={refresh}>
                 {/* 轮播图 */}
-                <Swiper rubberband={false} style={{ '--track-padding': ' 0 0 12px' }}>{swiperItems}</Swiper>
+                {swiperItems.length > 0 ? <Swiper rubberband={false} style={{ '--track-padding': ' 0 0 12px' }}>{swiperItems}</Swiper> : undefined}
                 {/* 文章主体（包括评论） */}
                 <article>
                     {/* 文章详情 */}
                     <h3>{article.title}</h3>
                     <div>{article.content}</div>
-                    <Space block wrap={true} style={{ '--gap-vertical': '0' }}>{tagItems}</Space>
+                    {tagItems.length > 0 ? <Space block wrap={true} style={{ '--gap-vertical': '0' }}>{tagItems}</Space> : undefined}
                     <Space block justify="between" align="center">
                         <span className="date">{article.postDate}</span>
                         <Button
@@ -263,7 +330,7 @@ export default function PostDetail() {
                     <Space block>{`共 ${article.reviews} 条评论`}</Space>
                     <Space className="review-space" block align="center">
                         <MyAvatar src={userInfo.avatar} />
-                        <div onClick={() => reviewBtn(authorInfo.uid, article.uuid, true)} style={{ flexGrow: '1' }}>
+                        <div onClick={() => reviewBtn(authorInfo.userId)} style={{ flexGrow: '1' }}>
                             <Input
                                 placeholder="说点什么吧，万一火了呢~"
                                 disabled
@@ -285,7 +352,7 @@ export default function PostDetail() {
             </PullToRefresh>
             {/* 底部fixed栏 */}
             <Space className="bottom" block align="center">
-                <div onClick={() => reviewBtn(authorInfo.uid, article.uuid, true)}>
+                <div onClick={() => reviewBtn(authorInfo.userId)}>
                     <Input
                         placeholder="✏️ 说点什么..."
                         style={{
@@ -324,7 +391,7 @@ export default function PostDetail() {
                 <Space
                     align="center"
                     style={{ '--gap-horizontal': '2px', cursor: 'pointer' }}
-                    onClick={() => reviewBtn(authorInfo.uid, article.uuid, true)}
+                    onClick={() => reviewBtn(authorInfo.userId)}
                 >
                     <MessageOutline fontSize="28px" style={{ cursor: 'pointer' }} />
                     {article.reviews}
@@ -445,15 +512,28 @@ const converter = (obj: { likes?: number | string, stars?: number | string, revi
 }
 
 // 根据likes数和postDate排序，likes数优先，其次是postDate
-const sorter = (arr: Array<{ likes: number, postDate: string }>) => {
+const sorter = (arr: Array<{ likes: number | string, postDate: string }>) => {
     // 从大到小排
     arr.sort((b, a) => {
         if (a.likes !== b.likes) {
-            return a.likes - b.likes;
+            return (a.likes as number) - (b.likes as number);
         } else {
             return (new Date(a.postDate)).getTime() - (new Date(b.postDate)).getTime();
         }
     })
+}
+
+// 根据authorId获取对应authorInfo并填充
+const fillReviewAuthorInfo = async (review: Review) => {
+    try {
+        for (const reviewItem of review.reviewList) {
+            await fillReviewAuthorInfo(reviewItem);
+        }
+        review.authorInfo = (await getBaseUserInfo({ userId: review.authorId })).user as UserInfo;
+        review.authorInfo.userId = review.authorId;
+    } catch (err) {
+        Toast.show((err as Error).message);
+    }
 }
 
 const Container = styled.div` 

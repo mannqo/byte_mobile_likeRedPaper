@@ -6,27 +6,18 @@ import {
 } from 'antd-mobile-icons'
 import styled from "styled-components";
 import { useState } from "react";
-
-type NumOrString = number | string;
-type ReviewObj = {
-    avatar: string,
-    userName: string,
-    uid: number,
-    content: string,
-    likes: NumOrString,
-    postDate: string,
-    uuid: string,
-    reviews?: Array<ReviewObj>
-}
+import { Review } from "..";
+import { likeReview, unlikeReview } from "../../../services/review";
+import { getBaseUserInfo } from "../../../services/users";
 
 export function ReviewArea({
     reviews,
     enterUserHomePage,
     reviewCallback
 }: {
-    reviews: Array<ReviewObj>,
+    reviews: Review[],
     enterUserHomePage: (userName: string) => void,
-    reviewCallback: (uid: number, uuid: string, replyToArticle: boolean, userName?: string) => void,
+    reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
 }) {
     return (<>
         {reviews.map((review, idx) =>
@@ -37,19 +28,20 @@ export function ReviewArea({
                 key={idx}
             >
                 <>
-                    {review.reviews?.map((subReview, idx) =>
+                    {review.reviewList.map((subReview, idx) =>
                         <ReviewItem
                             info={subReview}
                             enterUserHomePage={enterUserHomePage}
                             reviewCallback={reviewCallback}
                             key={idx}
                             subReview={true}
+                            replyTo={subReview.replyToUserId !== review.authorId ? review.reviewList.find(i => i.authorId === subReview.replyToUserId)?.authorInfo.nickname : undefined}
                         />
                     )}
                     <hr style={{
                         marginLeft: '40px',
-                        color:'rgb(206, 206, 206, 0.2)'
-                    }}/>
+                        color: 'rgb(206, 206, 206, 0.2)'
+                    }} />
                 </>
             </ReviewItem>
         )}
@@ -57,30 +49,42 @@ export function ReviewArea({
 }
 
 export function ReviewItem({
-    info: { avatar, userName, content, postDate, likes, uid, uuid },
+    info: { authorInfo, content, postDate, likes, reviewId, parentReviewId },
     enterUserHomePage,
     reviewCallback,
     children,
     subReview = false,
+    replyTo,
 }: {
-    info: ReviewObj,
+    info: Review,
     enterUserHomePage: (userName: string) => void,
-    reviewCallback: (uid: number, uuid: string, replyToArticle: boolean, userName?: string) => void,
+    reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
     children?: React.ReactElement<any, any>,
     subReview?: boolean,
+    replyTo?: string,
 }) {
     const subReviewStyle = {
         paddingLeft: '40px',
         marginTop: '8px'
     }
 
+    const userId = 1;
+
     // State
     let [liked, setLiked] = useState(false);
 
     // 喜欢按钮
-    const likeBtn = () => {
-        Toast.show(`给${userName}的评论${liked ? '取消' : ''}点赞，评论uuid=${uuid}；` + (subReview ? `此评论为二级评论` : ''));
-        setLiked(!liked);
+    const likeBtn = async () => {
+        try {
+            if (liked) {
+                await unlikeReview({ userId, reviewId });
+            } else {
+                await likeReview({ userId, reviewId });
+            }
+            setLiked(!liked);
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     return <ReviewItemContainer>
@@ -90,7 +94,7 @@ export function ReviewItem({
             block
             align="start"
         >
-            <MyAvatar src={avatar} onClick={() => enterUserHomePage(userName)} />
+            <MyAvatar src={authorInfo.avatar} onClick={() => enterUserHomePage(authorInfo.nickname)} />
             <Space
                 direction="vertical"
                 style={{
@@ -98,9 +102,13 @@ export function ReviewItem({
                 }}
             >
                 <div className="review-author">
-                    <span onClick={() => enterUserHomePage(userName)} style={{ cursor: 'pointer' }}>{userName}</span>
+                    <span
+                        onClick={() => enterUserHomePage(authorInfo.nickname)}
+                        style={{ cursor: 'pointer' }}
+                    >{authorInfo.nickname}</span>
                 </div>
-                <div onClick={() => reviewCallback(uid, uuid, false, userName)}>
+                <div onClick={() => reviewCallback(authorInfo.userId, authorInfo.nickname, subReview ? parentReviewId : reviewId)}>
+                    {replyTo ? <span className="replyTo">{'@' + replyTo + ' '}</span> : ''}
                     {content}
                     <span className="review-date">{postDate}</span>
                 </div>
@@ -114,7 +122,7 @@ export function ReviewItem({
                 }}
                 onClick={likeBtn}
             >
-                {liked ? <HeartFill fontSize="20px" style={{ cursor: 'pointer' }} color="red"/> :
+                {liked ? <HeartFill fontSize="20px" style={{ cursor: 'pointer' }} color="red" /> :
                     <HeartOutline fontSize="20px" style={{ cursor: 'pointer' }} />}
                 <div style={{ fontSize: '12px' }}>
                     {
@@ -147,5 +155,11 @@ const ReviewItemContainer = styled.div`
     .review-author{
         font-size: 12px;
         color: rgb(170, 170, 170);
+    }
+
+    .replyTo{
+        font-size: 12px;
+        color: rgb(170, 170, 170);
+        white-space: pre;
     }
 `
