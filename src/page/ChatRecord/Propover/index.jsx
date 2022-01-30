@@ -5,24 +5,24 @@ import cookie from 'react-cookies';
 
 export const PropoverWrapper = (props) => {
     const { userInfo, chatRecord } = props;
-    const id = cookie.load('userInfo');
-    console.log(userInfo);
+    const user = cookie.load('userInfo');
+
     return (
         <div>
             {
                 chatRecord && chatRecord.map(record => (
-                    record.userId === id ?
+                    record.userId == user.userId ?
                         <PopoverItem
                             key={record._id}
-                            avatar={userInfo.avatar}
+                            avatar={user.avatar}
                             content={record.message}
-                            direct={'left'}
+                            direct='left'
                             classname='leftDialog' />
                         : <PopoverItem
                             key={record._id}
                             avatar={userInfo.avatar}
                             content={record.message}
-                            direct={'right'}
+                            direct='right'
                             classname='rightDialog'
                         />
                 ))

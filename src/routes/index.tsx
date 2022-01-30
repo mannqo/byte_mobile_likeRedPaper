@@ -11,6 +11,8 @@ import Message from "../page/Tabbar/Message";
 import PersonalCenter from "../page/Tabbar/PersonalCenter";
 import Login from "../page/Login";
 import Follows from "../page/Follows";
+import EditPage from "../page/EdifPage";
+import LikeArticle from "../page/LikeArticles";
 
 const routes = [
     {
@@ -78,7 +80,16 @@ const routes = [
         component: Follows,
         content: '关注的人'
     },
-
+    {
+        path: "/person/edit",
+        exact: true,
+        component: EditPage
+    },
+    {
+        path:"/person/like",
+        exact: true,
+        component: LikeArticle,
+    },
     {
         path: "/search",
         component: Search,

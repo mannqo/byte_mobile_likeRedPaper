@@ -6,8 +6,10 @@ import { getFullUserInfo } from '../../services/users'
 import MessageInput from './MessageInput'
 import { PropoverWrapper } from './Propover'
 import './index.css';
+import cookie from 'react-cookies';
 
 export default memo(function ChatRecord() {
+    const id = cookie.load('userInfo').userId;
     const history = useHistory();
     const location = useLocation();
     const [userInfo, setUserInfo] = useState([]);
@@ -16,7 +18,7 @@ export default memo(function ChatRecord() {
 
     useEffect(async () => {
         const user = await getFullUserInfo({ userId: receiverId });
-        const res = await getChattingRecord({ userId: 1, receiverId })
+        const res = await getChattingRecord({ userId: id, receiverId })
         setChatRecord(res.record);
         setUserInfo(user.user);
     }, [])

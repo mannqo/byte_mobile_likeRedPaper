@@ -14,7 +14,6 @@ export default memo(function Login() {
     if (cookie.load('userInfo')) history.push('/tabbar');
 
     const onFinish = async (user) => {
-        const { username } = user;
         try {
             const res = await login(user);
             Toast.show({

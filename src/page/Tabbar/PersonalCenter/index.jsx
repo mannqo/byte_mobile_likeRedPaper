@@ -4,7 +4,6 @@ import { MoreOutline, SendOutline } from 'antd-mobile-icons'
 import styled from 'styled-components'
 import EditInfo from './EditInfo'
 import cookie from 'react-cookies'
-import { useHistory } from 'react-router-dom'
 
 
 export default memo(function PersonalCenter() {

@@ -12,8 +12,12 @@ export default memo(function EditInfo() {
     switch (e) {
       case '1': history.push('/person/follows'); break;
       case '2': history.push('/person/fans'); break;
+      case '3': history.push('/person/like'); break;
       default: console.log(1);
     }
+  }
+  const toEdit = () => {
+    history.push('/person/edit');
   }
 
   return (
@@ -26,7 +30,7 @@ export default memo(function EditInfo() {
         </TabBar>
       </TabBarWrapper>
       <EditWrapper>
-        <Button fill='outline' size='mini' style={{ 'height': '30px' }}>编辑资料</Button>
+        <Button fill='outline' size='mini' style={{ 'height': '30px' }} onClick={toEdit}>编辑资料</Button>
       </EditWrapper>
     </div>
   );
