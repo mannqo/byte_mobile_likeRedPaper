@@ -17,7 +17,7 @@ import MyAvatar from "./component/MyAvatar";
 import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
 import { getArticleById, likeArticle, starArticle, unlikeArticle, unstarArticle } from "../../services/article";
-import { cancelFollow, followUser, getBaseUserInfo } from "../../services/users";
+import { cancelFollow, followOthers, getBaseUserInfo } from "../../services/users";
 import { postReview } from "../../services/review";
 
 type UserInfo = {
@@ -151,7 +151,6 @@ export default function PostDetail() {
     // 关注文章作者的按钮
     const followBtn = async () => {
         try {
-
             if (followed) {
                 // 取消关注
                 Dialog.confirm({
@@ -164,7 +163,7 @@ export default function PostDetail() {
                 })
             } else {
                 // 关注
-                await followUser({ userId: userInfo.userId, followerId: authorInfo.userId });
+                await followOthers({ userId: userInfo.userId, followerId: authorInfo.userId });
                 setFollowed(true);
             }
         } catch (err) {

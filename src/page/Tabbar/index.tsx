@@ -72,8 +72,9 @@ export default Tabbar;
 const TabbarContainer = styled.div` 
     .bottom {
         width: 100%;
-        position: absolute;
+        position: fixed;
         bottom: 0;
+        background-color: #fff;
     }
     
 ` 
