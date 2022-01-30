@@ -4,11 +4,19 @@ import { MoreOutline, SendOutline } from 'antd-mobile-icons'
 import styled from 'styled-components'
 import EditInfo from './EditInfo'
 import cookie from 'react-cookies'
+import { useHistory } from 'react-router-dom'
 
 
 export default memo(function PersonalCenter() {
 
+    const history = useHistory();
+    console.log(cookie.load('userInfo'));
+
     const [userInfo, setUserInfo] = useState(cookie.load('userInfo'));
+    if (!userInfo) {
+        history.push('/login');
+    }
+
     const right = (
         <div style={{ fontSize: 20 }}>
             <Space>
@@ -30,7 +38,7 @@ export default memo(function PersonalCenter() {
             <ItemContainer className='ItemContainer'>
                 {userInfo ?
                     <List.Item
-                        prefix={<Avatar src={userInfo.Avatar}
+                        prefix={<Avatar src={userInfo.avatar}
                             style={{ borderRadius: '50%', '--size': '90px' }} />}
                         description={userInfo.description}
                     >
