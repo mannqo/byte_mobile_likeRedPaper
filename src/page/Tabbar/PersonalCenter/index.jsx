@@ -38,7 +38,7 @@ export default memo(function PersonalCenter() {
             <ItemContainer className='ItemContainer'>
                 {userInfo ?
                     <List.Item
-                        prefix={<Avatar src={userInfo.Avatar}
+                        prefix={<Avatar src={userInfo.avatar}
                             style={{ borderRadius: '50%', '--size': '90px' }} />}
                         description={userInfo.description}
                     >

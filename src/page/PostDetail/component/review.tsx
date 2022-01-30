@@ -5,10 +5,11 @@ import {
     HeartFill,
 } from 'antd-mobile-icons'
 import styled from "styled-components";
-import { useState } from "react";
-import { Review } from "..";
+import { useEffect, useState } from "react";
+import { Review, UserFullInfo } from "..";
 import { likeReview, unlikeReview } from "../../../services/review";
-import { getBaseUserInfo } from "../../../services/users";
+import cookie from 'react-cookies';
+import { getFullUserInfo } from "../../../services/users";
 
 export function ReviewArea({
     reviews,
@@ -49,7 +50,7 @@ export function ReviewArea({
 }
 
 export function ReviewItem({
-    info: { authorInfo, content, postDate, likes, reviewId, parentReviewId },
+    info: { authorInfo, content, postDate, likes, reviewId, parentReviewId, _id },
     enterUserHomePage,
     reviewCallback,
     children,
@@ -63,6 +64,8 @@ export function ReviewItem({
     subReview?: boolean,
     replyTo?: string,
 }) {
+    const userInfo = cookie.load('userInfo') as UserFullInfo;
+
     const subReviewStyle = {
         paddingLeft: '40px',
         marginTop: '8px'
@@ -71,7 +74,16 @@ export function ReviewItem({
     const userId = 1;
 
     // State
-    let [liked, setLiked] = useState(false);
+    let [liked, setLiked] = useState(userInfo.likedReviews.includes(_id));
+
+    // Effect
+    // 效率极差！！
+    useEffect(() => {
+        (async () => {
+            const json = await getFullUserInfo({ userId: userInfo.userId });
+            cookie.save('userInfo', json.user, {});
+        })();
+    }, [liked]);
 
     // 喜欢按钮
     const likeBtn = async () => {
