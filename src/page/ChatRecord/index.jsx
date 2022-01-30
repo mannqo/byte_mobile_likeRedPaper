@@ -5,8 +5,8 @@ import { getChattingRecord } from '../../services/chat'
 import { getUserInfo } from '../../services/users'
 import MessageInput from './MessageInput'
 import { PropoverWrapper } from './Propover'
+import './index.css';
 
-const id = 1;
 export default memo(function ChatRecord() {
     const history = useHistory();
     const location = useLocation();
@@ -17,9 +17,8 @@ export default memo(function ChatRecord() {
     useEffect(async () => {
         const user = await getUserInfo({ userId: receiverId });
         const record = await getChattingRecord({ userId: 1, receiverId })
-        console.log(record);
         setChatRecord(record);
-        setUserInfo(user);
+        setUserInfo(user.user);
     }, [])
 
 
@@ -28,9 +27,9 @@ export default memo(function ChatRecord() {
     }
     return (
         <div>
-            <NavBar onBack={back}>{userInfo && userInfo.username}</NavBar>
+            <NavBar onBack={back} className='title'>{userInfo && userInfo.nickname}</NavBar>
             <PropoverWrapper userInfo={userInfo} chatRecord={charRecord}></PropoverWrapper>
-            <MessageInput></MessageInput>
+            <MessageInput receiverId={receiverId}></MessageInput>
         </div>
     )
 })

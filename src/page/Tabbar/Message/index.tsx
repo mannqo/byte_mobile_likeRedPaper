@@ -25,9 +25,9 @@ export default memo(function Message() {
             </NavBar>
             <Space wrap style={{ fontSize: 36 }}>
                 <IconContainer>
-                    <HeartFill color='#ed7370'></HeartFill>
-                    <TeamFill color='#5690f3' />
-                    <MessageFill color='#59ce9e' />
+                    <HeartFill color='#ed7370' onClick={() => history.push('/message/like')}></HeartFill>
+                    <TeamFill color='#5690f3' onClick={() => history.push('/message/fans')} />
+                    <MessageFill color='#59ce9e' onClick={() => history.push('/message/comment')} />
                 </IconContainer>
             </Space>
 

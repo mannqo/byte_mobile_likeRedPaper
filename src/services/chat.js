@@ -1,19 +1,14 @@
 import request from "./axios";
 
-export function sendMessage(userId, receiverId, message) {
+export function sendMessage(option) {
     return request({
         method: 'POST',
         url: '/sendMessage',
-        data: {
-            userId,
-            receiverId,
-            message
-        }
+        data: option
     })
 }
 
 export function getChatList(option) {
-    console.log(option);
     return request({
         method: 'GET',
         url: '/getChatList',

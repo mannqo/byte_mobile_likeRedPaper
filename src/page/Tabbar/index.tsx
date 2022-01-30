@@ -15,7 +15,7 @@ import { renderRoutes } from 'react-router-config';
 const Bottom: FC = () => {
     const history = useHistory()
     const location = useLocation()
-    const { pathname } = location
+    const { pathname } = location;
 
     const setRouteActive = (value: string) => {
         history.push(value)

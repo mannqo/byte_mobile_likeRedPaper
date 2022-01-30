@@ -1,6 +1,8 @@
 import { Redirect } from "react-router-dom";
-import ChatRecord from "../page/ChatRecord"; 
+import BeLiked from "../page/BeLiked";
+import ChatRecord from "../page/ChatRecord";
 import CreateChatting from "../page/CreateChatting";
+import Fans from "../page/Fans";
 import Search from "../page/Search";
 import Tabbar from "../page/Tabbar";
 import HomePage from "../page/Tabbar/HomePage";
@@ -45,13 +47,22 @@ const routes = [
         component: ChatRecord,
     },
     {
+        path: "/message/fans",
+        exact: true,
+        component: Fans,
+    },
+    {
+        path: "/message/like",
+        component: BeLiked
+    },
+    {
         path: "/search",
         component: Search,
     },
     {
         path: "/createChatting",
-        component: CreateChatting   
-    }
+        component: CreateChatting
+    },
 ]
 
 export default routes;
