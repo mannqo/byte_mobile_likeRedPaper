@@ -3,6 +3,7 @@ import BeLiked from "../page/BeLiked";
 import ChatRecord from "../page/ChatRecord";
 import CreateChatting from "../page/CreateChatting";
 import Fans from "../page/Fans";
+import PostDetail from "../page/PostDetail";
 import Search from "../page/Search";
 import Tabbar from "../page/Tabbar";
 import HomePage from "../page/Tabbar/HomePage";
@@ -63,6 +64,11 @@ const routes = [
         path: "/createChatting",
         component: CreateChatting
     },
+    {
+        path: "/post/detail",
+        exact: true,
+        component: PostDetail,
+    }
 ]
 
 export default routes;

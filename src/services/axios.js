@@ -8,7 +8,7 @@ export default function request(option) {
             baseURL: "http://localhost:8080",
             timeout: 10000,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                // "Access-Control-Allow-Origin": "*",
             }
         })
         instance.defaults.headers.post['Content-Type'] = 'application/json'
@@ -46,6 +46,10 @@ export default function request(option) {
 
         // 传入对象进行网络请求
         instance(option).then(res => {
+            // 业务状态码不是200也抛出异常
+            if (res.status !== 200) {
+                throw Error(res.msg);
+            }
             resolve(res)
         }).catch(err => {
             reject(err)
