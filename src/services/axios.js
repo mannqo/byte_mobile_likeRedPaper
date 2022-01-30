@@ -1,5 +1,12 @@
 import axios from 'axios'
 
+export class ExecuteError extends Error {
+    constructor(msg, res) {
+        super('' + msg);
+        this.res = res;
+        this.status = res.status;
+    }
+};
 
 export default function request(option) {
     return new Promise((resolve, reject) => {
@@ -8,7 +15,7 @@ export default function request(option) {
             baseURL: "http://localhost:8080",
             timeout: 10000,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                // "Access-Control-Allow-Origin": "*",
             }
         })
         instance.defaults.withCredentials = true;
@@ -45,12 +52,12 @@ export default function request(option) {
             return err
         })
         // 传入对象进行网络请求
-        instance(option).then(res => {  
+        instance(option).then(res => {
             // 业务状态码不是200也抛出异常
             // console.log(res.status);
-            // if (res.status !== 200) {
-            //     throw Error(res.msg);
-            // }
+            if (res.status !== 200) {
+                throw new ExecuteError(res.msg, res);
+            }
             resolve(res)
         }).catch(err => {
             reject(err)

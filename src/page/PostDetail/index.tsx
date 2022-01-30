@@ -11,14 +11,16 @@ import {
     StarFill,
 } from 'antd-mobile-icons'
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import MyAvatar from "./component/MyAvatar";
 import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
 import { getArticleById, likeArticle, starArticle, unlikeArticle, unstarArticle } from "../../services/article";
-import { cancelFollow, followOthers, getBaseUserInfo } from "../../services/users";
+import { cancelFollow, followOthers, getBaseUserInfo, getFullUserInfo } from "../../services/users";
 import { postReview } from "../../services/review";
+import { ExecuteError } from "../../services/axios";
+import cookie from 'react-cookies';
 
 type UserInfo = {
     avatar: string,
@@ -26,8 +28,21 @@ type UserInfo = {
     userId: number,
 }
 
+type UserFullInfo = {
+    avatar: string,
+    nickname: string,
+    userId: number,
+    fans: number[],
+    follows: number[],
+    likedArticles: string[],
+    likedReviews: string[],
+    staredArticles: string[],
+}
+
 type NumOrString = number | string;
 type Article = {
+    _id: string,
+    authorId: number,
     images: string[],
     title: string,
     content: string,
@@ -39,6 +54,7 @@ type Article = {
     articleId: number
 }
 type Review = {
+    _id: string,
     authorId: number,
     authorInfo: UserInfo,
     content: string,
@@ -50,14 +66,20 @@ type Review = {
     parentReviewId?: number,
     reviewList: Review[]
 }
-export type { UserInfo, Article, Review };
+export type { UserFullInfo, UserInfo, Article, Review };
 
 export default function PostDetail() {
-    const articleId = 2;
-    const server = 'http://localhost:8080';
+    const history = useHistory();
+    const userInfo = cookie.load('userInfo') as UserFullInfo;
+    if (!userInfo) history.push('/login');
+
+    const param = useParams<{ articleId: string | undefined }>()
+    const articleId = Number(param.articleId);
 
     // State
     let [article, setArticle] = useState<Article>({
+        _id: '',
+        authorId: 0,
         images: [],
         title: "",
         content: "",
@@ -69,11 +91,6 @@ export default function PostDetail() {
         articleId: 0
     });
     let [reviews, setReviews] = useState<Review[]>([]);
-    let userInfo = {
-        avatar: "https://joeschmoe.io/api/v1/random",
-        nickname: "张三",
-        userId: 1
-    };
     let [authorInfo, setAuthorInfo] = useState<UserInfo>({
         avatar: "",
         nickname: "",
@@ -97,9 +114,15 @@ export default function PostDetail() {
     useEffect(() => {
         refresh();
     }, []);
+    // 效率极差！！
+    useEffect(() => {
+        (async () => {
+            const json = await getFullUserInfo({ userId: userInfo.userId });
+            cookie.save('userInfo', json.user, {});
+        })();
+    }, [followed, liked, stared, reviews])
 
     // 返回上一级按钮
-    const history = useHistory();
     const back = () => {
         history.go(-1);
     }
@@ -108,30 +131,35 @@ export default function PostDetail() {
     const refresh = async () => {
         try {
             const json = await getArticleById({ articleId });
+            const article = json.article as Article;
             const reviewJson = json.article.reviewList as Review[];
             for (const reviewItem of reviewJson) {
                 await fillReviewAuthorInfo(reviewItem);
             }
-            const authorJson = (await getBaseUserInfo({ userId: json.article.authorId })).user;
-            authorJson.userId = json.article.authorId;
+            const authorJson = (await getBaseUserInfo({ userId: article.authorId })).user;
+            authorJson.userId = article.authorId;
             // 排序
             sorter(reviewJson);
             reviewJson.forEach(function f(item) {
                 sorter(item.reviewList);
             })
             // 格式化
-            converter(json.article);
+            converter(article);
             reviewJson.forEach(function f(item) {
                 converter(item);
                 item.reviewList.forEach(f);
             })
-            setArticle(json.article);
+            // 更新state
+            setArticle(article);
             setReviews(reviewJson);
             setAuthorInfo(authorJson);
+            setFollowed(userInfo.follows.includes(authorInfo.userId));
+            setLiked(userInfo.likedArticles.includes(article._id));
+            setStared(userInfo.staredArticles.includes(article._id));
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -167,7 +195,7 @@ export default function PostDetail() {
                 setFollowed(true);
             }
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -196,7 +224,7 @@ export default function PostDetail() {
             }
             setLiked(!liked);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -210,7 +238,7 @@ export default function PostDetail() {
             }
             setStared(!stared);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -244,7 +272,7 @@ export default function PostDetail() {
             Toast.show('发布成功');
             refresh();
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -531,7 +559,7 @@ const fillReviewAuthorInfo = async (review: Review) => {
         review.authorInfo = (await getBaseUserInfo({ userId: review.authorId })).user as UserInfo;
         review.authorInfo.userId = review.authorId;
     } catch (err) {
-        Toast.show((err as Error).message);
+        Toast.show((err as ExecuteError).message);
     }
 }
 

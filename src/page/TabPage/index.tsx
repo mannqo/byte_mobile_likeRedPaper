@@ -1,10 +1,8 @@
 import { Article } from "../PostDetail";
 import Mock from 'mockjs';
 import styled from "styled-components";
-import { InfiniteScroll, PullToRefresh, Space, Toast } from "antd-mobile";
+import { InfiniteScroll } from "antd-mobile";
 import ArticleCard from "./component/ArticleCard";
-import { useState } from "react";
-import { sleep } from "antd-mobile/es/utils/sleep";
 
 const buildFake = () => {
     let data = Mock.mock({
@@ -12,8 +10,13 @@ const buildFake = () => {
         content: '@paragraph',
         'likes|0-20000': 20000,
         postDate: '@datetime',
-        'articleId|0-20': 20,
-        images: [],
+        'articleId|1-2': 2,
+        images: [
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1620385114079.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1611837869906.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1612394877886.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1636805552641.jpg',
+        ],
         tags: [],
         stars: 0,
         reviews: 0,
@@ -59,5 +62,6 @@ const Container = styled.div`
 
     .container > * {
         break-inside: avoid;
+        margin-bottom: 10px;
     }
 `

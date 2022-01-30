@@ -88,7 +88,7 @@ const routes = [
         component: CreateChatting
     },
     {
-        path: "/post/detail",
+        path: "/post/detail/:articleId",
         exact: true,
         component: PostDetail,
     }

@@ -29,7 +29,7 @@ export default memo(function Homepage() {
 
     const loadMore = async (tabIndex: number) => {
         await sleep(1000);
-        Toast.show('刷新了页面' + tabIndex);
+        // Toast.show('刷新了页面' + tabIndex);
         setHasMore(false);
     }
 
