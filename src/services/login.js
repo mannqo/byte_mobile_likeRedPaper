@@ -1,24 +1,18 @@
 import request from "./axios";
 
-export function register(username, password) {
+export function register(option) {
     return request({
         method: 'POST',
         url: '/register',
-        data: {
-            username,
-            password
-        }
+        data: option
     })
 }
 
-export function login(username, password) {
+export function login(option) {
     return request({
         method: 'POST',
         url: '/login',
-        params: {
-            username,
-            password
-        }
+        data: option
     })
 }
 
