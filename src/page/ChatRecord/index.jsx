@@ -2,7 +2,7 @@ import { NavBar } from 'antd-mobile'
 import React, { memo, useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { getChattingRecord } from '../../services/chat'
-import { getUserInfo } from '../../services/users'
+import { getFullUserInfo } from '../../services/users'
 import MessageInput from './MessageInput'
 import { PropoverWrapper } from './Propover'
 import './index.css';
@@ -15,7 +15,7 @@ export default memo(function ChatRecord() {
     const receiverId = location.search.split('=')[1];
 
     useEffect(async () => {
-        const user = await getUserInfo({ userId: receiverId });
+        const user = await getFullUserInfo({ userId: receiverId });
         const res = await getChattingRecord({ userId: 1, receiverId })
         setChatRecord(res.record);
         setUserInfo(user.user);

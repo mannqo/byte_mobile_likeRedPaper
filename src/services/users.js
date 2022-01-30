@@ -1,15 +1,6 @@
 import request from "./axios";
 
-/* 
- * params: userId
- */
-export function getUserInfo(option) {
-    return request({
-        method: 'GET',
-        url: '/user/fullInfo',
-        params: option,
-    })
-}
+
 
 /* 
  * 关注别人
@@ -54,6 +45,9 @@ export function getBaseUserInfo(option) {
     })
 }
 
+/* 
+ * params: userId
+ */ 
 export function getFullUserInfo(option) {
     return request({
         method: 'GET',

@@ -8,6 +8,7 @@ import cookie from 'react-cookies'
 
 export default memo(function PersonalCenter() {
 
+    const [userInfo, setUserInfo] = useState(cookie.load('userInfo'));
     const right = (
         <div style={{ fontSize: 20 }}>
             <Space>
@@ -23,7 +24,6 @@ export default memo(function PersonalCenter() {
             </Space>
         </div>
     )
-    const [userInfo, setUserInfo] = useState(cookie.load('userInfo'));
     return (
         <div>
             <NavBar right={right} left={left} backArrow={false}></NavBar>
