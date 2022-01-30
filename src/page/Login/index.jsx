@@ -12,22 +12,26 @@ import cookie from 'react-cookies';
 export default memo(function Login() {
     const history = useHistory();
     if (cookie.load('userInfo')) history.push('/tabbar');
+
     const onFinish = async (user) => {
+        const { username } = user;
         try {
-            const { username } = user;
             const res = await login(user);
             Toast.show({
                 content: res.msg,
                 afterClose: async () => {
-                    if (res.status === 200 || res.status === 406) {
-                        history.push('/tabbar');
-                        const userInfo = await getFullUserInfo({ username });
-                        cookie.save('userInfo', userInfo.user);
-                    }
+                    const userInfo = await getFullUserInfo({ userId: res.userId });
+                    cookie.save('userInfo', userInfo.user);
+                    history.push('/tabbar');
                 },
             })
         } catch (err) {
-            console.log(err);
+            Toast.show(err.message);
+            if (err.status === 406) {
+                const userInfo = await getFullUserInfo({ userId: err.res.userId });
+                cookie.save('userInfo', userInfo.user);
+                history.push('/tabbar');
+            }
         }
 
     }

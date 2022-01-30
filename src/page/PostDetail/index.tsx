@@ -19,6 +19,7 @@ import { sleep } from 'antd-mobile/es/utils/sleep';
 import { getArticleById, likeArticle, starArticle, unlikeArticle, unstarArticle } from "../../services/article";
 import { cancelFollow, followOthers, getBaseUserInfo } from "../../services/users";
 import { postReview } from "../../services/review";
+import { ExecuteError } from "../../services/axios";
 
 type UserInfo = {
     avatar: string,
@@ -131,7 +132,7 @@ export default function PostDetail() {
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -167,7 +168,7 @@ export default function PostDetail() {
                 setFollowed(true);
             }
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -190,13 +191,23 @@ export default function PostDetail() {
     const likeBtn = async () => {
         try {
             if (liked) {
-                await unlikeArticle({ userId: userInfo.userId, articleId: articleId });
+                const result = await unlikeArticle({ userId: userInfo.userId, articleId: articleId });
+                if (result === 200) {
+                    setLiked(!liked);
+                } else {
+                    Toast.show(result.msg);
+                }
             } else {
-                await likeArticle({ userId: userInfo.userId, articleId: articleId });
+                const result = await likeArticle({ userId: userInfo.userId, articleId: articleId });
+                if (result === 200) {
+                    setLiked(!liked);
+                } else {
+                    Toast.show(result.msg);
+                }
             }
             setLiked(!liked);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -210,7 +221,7 @@ export default function PostDetail() {
             }
             setStared(!stared);
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -244,7 +255,7 @@ export default function PostDetail() {
             Toast.show('发布成功');
             refresh();
         } catch (err) {
-            Toast.show((err as Error).message);
+            Toast.show((err as ExecuteError).message);
         }
     }
 
@@ -531,7 +542,7 @@ const fillReviewAuthorInfo = async (review: Review) => {
         review.authorInfo = (await getBaseUserInfo({ userId: review.authorId })).user as UserInfo;
         review.authorInfo.userId = review.authorId;
     } catch (err) {
-        Toast.show((err as Error).message);
+        Toast.show((err as ExecuteError).message);
     }
 }
 
