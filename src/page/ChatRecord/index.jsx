@@ -16,8 +16,8 @@ export default memo(function ChatRecord() {
 
     useEffect(async () => {
         const user = await getUserInfo({ userId: receiverId });
-        const record = await getChattingRecord({ userId: 1, receiverId })
-        setChatRecord(record);
+        const res = await getChattingRecord({ userId: 1, receiverId })
+        setChatRecord(res.record);
         setUserInfo(user.user);
     }, [])
 

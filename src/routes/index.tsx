@@ -9,12 +9,18 @@ import Tabbar from "../page/Tabbar";
 import HomePage from "../page/Tabbar/HomePage";
 import Message from "../page/Tabbar/Message";
 import PersonalCenter from "../page/Tabbar/PersonalCenter";
+import Login from "../page/Login";
 
 const routes = [
     {
+        path: "/login",
+        exact: true,
+        component: Login
+    },
+    {
         path: "/",
         exact: true,
-        render: () => <Redirect to="/tabbar" />
+        render: () => <Redirect to="/login" />
     },
     {
         path: "/tabbar",

@@ -1,12 +1,13 @@
 import { NavBar, Space, List, Avatar, Tabs } from 'antd-mobile'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useState } from 'react'
 import { MoreOutline, SendOutline } from 'antd-mobile-icons'
 import styled from 'styled-components'
-import { getUserInfo } from '../../../services/users'
 import EditInfo from './EditInfo'
+import cookie from 'react-cookies'
 
 
 export default memo(function PersonalCenter() {
+
     const right = (
         <div style={{ fontSize: 20 }}>
             <Space>
@@ -22,17 +23,7 @@ export default memo(function PersonalCenter() {
             </Space>
         </div>
     )
-    const [userInfo, setUserInfo] = useState();
-    useEffect(async () => {
-        try {
-            const res = await getUserInfo({ userId: 1 });
-            setUserInfo(res.user);
-        } catch (err) {
-            console.log(err);
-        }
-
-    }, [])
-
+    const [userInfo, setUserInfo] = useState(cookie.load('userInfo'));
     return (
         <div>
             <NavBar right={right} left={left} backArrow={false}></NavBar>

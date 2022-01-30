@@ -7,8 +7,8 @@ const MessageList = () => {
     const [chatList, setChatList] = useState([]);
     useEffect(async () => {
         try {
-            const list = await getChatList({ userId: 1 });
-            setChatList(list);
+            const res = await getChatList({ userId: 1 }); 
+            setChatList(res.chatList);
         } catch (err) {
             console.log(err);
         }

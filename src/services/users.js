@@ -68,12 +68,4 @@ export function followUser(option) {
         url: '/user/follow',
         data: option,
     })
-}
-
-export function cancelFollow(option) {
-    return request({
-        method: 'GET',
-        url: '/user/cancelFollow',
-        data: option,
-    })
-}
+} 

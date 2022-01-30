@@ -21,6 +21,7 @@ export default memo(function Homepage() {
             content: '记录我的日常',
             duration: 1000,
         })
+
     return (
         <TabsContainer>
             <NavBar right={right} onBack={back}> 首页 </NavBar>
