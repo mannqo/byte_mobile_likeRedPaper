@@ -1,9 +1,9 @@
 import { NavBar } from 'antd-mobile'
 import React, { memo } from 'react'
 import { useHistory } from 'react-router-dom'
-import FansList from './FansList'
+import FollowsList from './FollowsList'
 
-export default memo(function Fans(props) { 
+export default memo(function Fans(props) {
     const history = useHistory();
     const back = () => {
         history.go(-1);
@@ -11,7 +11,7 @@ export default memo(function Fans(props) {
     return (
         <>
             <NavBar onBack={back} > {props.route.content} </NavBar>
-            <FansList />
+            <FollowsList />
         </>
     )
 })

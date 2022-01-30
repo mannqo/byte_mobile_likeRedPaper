@@ -1,42 +1,32 @@
 import { TabBar, Badge, Button } from 'antd-mobile';
 import React, { memo } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import cookie from 'react-cookies'
 
 export default memo(function EditInfo() {
-  const tabs = [
-    {
-      key: 'follow',
-      title: '关注',
-      icon: 25,
-      badge: Badge.dot,
-    },
-    {
-      key: 'fans',
-      title: '粉丝',
-      icon: 25,
-    },
-    {
-      key: 'star',
-      title: '点赞与收藏',
-      icon: 1,
-    },
-  ]
+  const userInfo = cookie.load('userInfo');
+  const { fans, follows, likedArticles } = userInfo;
+  const history = useHistory();
+  const getList = (e) => {
+    switch (e) {
+      case '1': history.push('/person/follows'); break;
+      case '2': history.push('/person/fans'); break;
+      default: console.log(1);
+    }
+  }
+
   return (
     <div style={{ 'display': 'flex', 'margin': '10px 0' }}>
       <TabBarWrapper>
-        <TabBar>
-          {tabs.map(item => (
-            <TabBar.Item
-              key={item.key}
-              icon={item.icon}
-              title={item.title}
-              badge={item.badge}
-            />
-          ))}
+        <TabBar onChange={getList}>
+          <TabBar.Item key='1' icon={follows && follows.length === 0 ? '0' : follows.length} title='关注' badge={Badge.dot} />
+          <TabBar.Item key='2' icon={fans && fans.length === 0 ? '0' : fans.length} title='粉丝' />
+          <TabBar.Item key='3' icon={likedArticles && likedArticles.length === 0 ? '0' : likedArticles.length} title='点赞与收藏' />
         </TabBar>
       </TabBarWrapper>
       <EditWrapper>
-        <Button fill='outline' size='mini' style={{'height': '30px'}}>编辑资料</Button>
+        <Button fill='outline' size='mini' style={{ 'height': '30px' }}>编辑资料</Button>
       </EditWrapper>
     </div>
   );

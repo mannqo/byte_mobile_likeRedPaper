@@ -1,31 +1,38 @@
-import { Popover, Avatar } from 'antd-mobile'
-import './index.css'
+import { Popover, Avatar } from 'antd-mobile';
+import './index.css';
+import cookie from 'react-cookies';
 
 
 export const PropoverWrapper = (props) => {
-    const { userInfo, chatRecord } = props; 
+    const { userInfo, chatRecord } = props;
+    const id = cookie.load('userInfo');
+    console.log(userInfo);
     return (
-        chatRecord && chatRecord.map(record => (
-            record.userId === 1 ?
-                <PopoverItem
-                    key={record._id}
-                    avatar={userInfo.avatar}
-                    content={record.message}
-                    direct={'left'}
-                    classname='leftDialog' />
-                : <PopoverItem
-                    key={record._id}
-                    avatar={userInfo.avatar}
-                    content={record.message}
-                    direct={'right'}
-                    classname='rightDialog'
-                />
-        )) || <></>
+        <div>
+            {
+                chatRecord && chatRecord.map(record => (
+                    record.userId === id ?
+                        <PopoverItem
+                            key={record._id}
+                            avatar={userInfo.avatar}
+                            content={record.message}
+                            direct={'left'}
+                            classname='leftDialog' />
+                        : <PopoverItem
+                            key={record._id}
+                            avatar={userInfo.avatar}
+                            content={record.message}
+                            direct={'right'}
+                            classname='rightDialog'
+                        />
+                ))
+            }
+        </div>
     )
 }
 
 const PopoverItem = (props) => {
-    const { avatar, content, direct, classname } = props; 
+    const { avatar, content, direct, classname } = props;
     return (
         <div className={classname}>
             <Popover content={content} placement={direct} defaultVisible visible>

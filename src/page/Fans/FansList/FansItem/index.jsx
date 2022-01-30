@@ -1,8 +1,10 @@
 import { List, Image, Button } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import { cancelFollow, followOthers, getFansList } from '../../../../services/users';
+import cookie from 'react-cookies';
 
 export default memo(function FansItem(props) {
+  const id = cookie.load('userInfo').userId;
   const { userInfo } = props;
   const { userId, nickname, avatar, description } = userInfo;
   const initialStatus = {
@@ -20,11 +22,11 @@ export default memo(function FansItem(props) {
   const followOrNot = async () => {
     try {
       if (status.status) {
-        await cancelFollow({ userId: 1, followerId: userId })
+        await cancelFollow({ userId: id, followerId: userId })
         setStatus(initialStatus);
       }
       else {
-        await followOthers({ userId: 1, followerId: userId })
+        await followOthers({ userId: id, followerId: userId })
         setStatus(followStatus)
       }
     } catch (err) {
@@ -36,9 +38,9 @@ export default memo(function FansItem(props) {
     const res = await getFansList({ userId });
     const { fansList } = res;
     fansList.map(item => {
-      item.userId === 1 && setStatus(followStatus);
+      item.userId === id && setStatus(followStatus);
     })
-  }, [])
+  }, [id])
   return (
     <List.Item
       key={userId}

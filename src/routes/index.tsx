@@ -10,6 +10,7 @@ import HomePage from "../page/Tabbar/HomePage";
 import Message from "../page/Tabbar/Message";
 import PersonalCenter from "../page/Tabbar/PersonalCenter";
 import Login from "../page/Login";
+import Follows from "../page/Follows";
 
 const routes = [
     {
@@ -48,6 +49,7 @@ const routes = [
             },
         ]
     },
+    // 我的消息
     {
         path: "/message/detail",
         exact: true,
@@ -57,11 +59,26 @@ const routes = [
         path: "/message/fans",
         exact: true,
         component: Fans,
+        content: '新增关注',
     },
     {
         path: "/message/like",
         component: BeLiked
     },
+    // 个人中心
+    {
+        path: "/person/fans",
+        exact: true,
+        component: Fans,
+        content: '粉丝',
+    },
+    {
+        path: "/person/follows",
+        exact: true,
+        component: Follows,
+        content: '关注的人'
+    },
+
     {
         path: "/search",
         component: Search,

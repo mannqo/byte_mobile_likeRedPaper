@@ -25,7 +25,7 @@ export function cancelFollow(option) {
 
 
 /*
- * @params: userId, followerId 
+ * @params: userId
  * 获取粉丝列表        
  */
 
@@ -33,6 +33,17 @@ export function getFansList(option) {
     return request({
         method: 'GET',
         url: '/user/fanList',
+        params: option,
+    })
+}
+/*
+ * @params: userId
+ * 获取关注列表        
+ */
+export function getFollowsList(option) {
+    return request({
+        method: 'GET',
+        url: '/user/followerList',
         params: option,
     })
 }

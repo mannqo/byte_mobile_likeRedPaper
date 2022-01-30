@@ -2,10 +2,13 @@ import { List } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import { getFansList } from '../../../services/users';
 import FansItem from './FansItem';
+import cookie from 'react-cookies';
 
-const userId = 1;
+
 export default memo(function FanList() {
     const [fansList, setFansList] = useState([]);
+    const { userId } = cookie.load('userInfo');
+
     useEffect(async () => {
         try {
             const res = await getFansList({ userId });
@@ -13,7 +16,8 @@ export default memo(function FanList() {
         } catch (err) {
             console.log(err);
         }
-    }, [])
+    }, [userId]) 
+    
     return (
         <List>
             {

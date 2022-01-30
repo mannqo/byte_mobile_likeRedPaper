@@ -1,5 +1,5 @@
 import { NavBar, Space, List, Avatar, Tabs } from 'antd-mobile'
-import React, { memo, useState } from 'react'
+import React, { memo } from 'react'
 import { MoreOutline, SendOutline } from 'antd-mobile-icons'
 import styled from 'styled-components'
 import EditInfo from './EditInfo'
@@ -7,8 +7,7 @@ import cookie from 'react-cookies'
 
 
 export default memo(function PersonalCenter() {
-
-    const [userInfo, setUserInfo] = useState(cookie.load('userInfo'));
+    const userInfo = cookie.load('userInfo');
     const right = (
         <div style={{ fontSize: 20 }}>
             <Space>
@@ -30,7 +29,7 @@ export default memo(function PersonalCenter() {
             <ItemContainer className='ItemContainer'>
                 {userInfo ?
                     <List.Item
-                        prefix={<Avatar src={userInfo.Avatar}
+                        prefix={<Avatar src={userInfo.avatar}
                             style={{ borderRadius: '50%', '--size': '90px' }} />}
                         description={userInfo.description}
                     >
