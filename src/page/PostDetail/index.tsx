@@ -210,8 +210,8 @@ export default function PostDetail() {
     }
 
     // 跳转到指定用户主页
-    const gotoUserPage = (userName: string) => {
-        Toast.show('前往' + userName + '的个人主页');
+    const gotoUserPage = (userId: number) => {
+        history.push('/other/page/' + userId);
     }
 
     // 跳转到搜索...
@@ -329,7 +329,7 @@ export default function PostDetail() {
                     className="top"
                     align="center"
                     style={{ cursor: 'pointer' }}
-                    onClick={() => gotoUserPage(authorInfo.nickname)}
+                    onClick={() => gotoUserPage(authorInfo.userId)}
                 >
                     <MyAvatar src={authorInfo.avatar} />
                     <span style={{ fontSize: '1rem' }}>{authorInfo.nickname}</span>
