@@ -63,3 +63,19 @@ export function unstarArticle(option) {
         data: option
     })
 }
+
+export function getLikeArticles(option) {
+    return request({
+        method: 'GET',
+        url: '/article/getLike',
+        params: option
+    })
+}
+
+export function getStarArticles(option) {
+    return request({
+        method: 'GET',
+        url: '/article/getStar',
+        params: option
+    })
+}

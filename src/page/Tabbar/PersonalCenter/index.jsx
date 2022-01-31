@@ -3,7 +3,10 @@ import React, { memo } from 'react'
 import { MoreOutline, SendOutline } from 'antd-mobile-icons'
 import styled from 'styled-components'
 import EditInfo from './EditInfo'
+import MyArticle from './MyArticle'
 import cookie from 'react-cookies'
+import MyLikeArticles from './MyLikeArticles'
+import MyStarArticles from './MyStarArticles'
 
 
 export default memo(function PersonalCenter() {
@@ -41,9 +44,9 @@ export default memo(function PersonalCenter() {
             <EditInfo />
             <TabsWrapper>
                 <Tabs defaultActiveKey='1'>
-                    <Tabs.Tab title='笔记' key='1'> 1 </Tabs.Tab>
-                    <Tabs.Tab title='收藏' key='2'> 2 </Tabs.Tab>
-                    <Tabs.Tab title='赞过' key='3'> 3 </Tabs.Tab>
+                    <Tabs.Tab title='笔记' key='1'><MyArticle /></Tabs.Tab>
+                    <Tabs.Tab title='收藏' key='2'><MyStarArticles /></Tabs.Tab>
+                    <Tabs.Tab title='赞过' key='3'><MyLikeArticles></MyLikeArticles></Tabs.Tab>
                 </Tabs>
             </TabsWrapper>
         </div>
