@@ -5,6 +5,34 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import TabPage from '../../TabPage';
 import { sleep } from 'antd-mobile/es/utils/sleep';
+import Mock from 'mockjs';
+import { Article } from '../../PostDetail';
+
+// 假数据。。。
+const buildFake = () => {
+    let data = Mock.mock({
+        title: '@title',
+        content: '@paragraph',
+        'likes|0-20000': 20000,
+        postDate: '@datetime',
+        'articleId|1-2': 2,
+        images: [
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1620385114079.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1611837869906.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1612394877886.png',
+            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1636805552641.jpg',
+        ],
+        tags: [],
+        stars: 0,
+        reviews: 0,
+    })
+    return data as Article;
+}
+
+let fake: Article[] = [];
+for (let i = 0; i < 10; i++) {
+    fake[i] = buildFake();
+}
 
 export default memo(function Homepage() {
 
@@ -15,11 +43,17 @@ export default memo(function Homepage() {
 
     // State
     let [hasMore, setHasMore] = useState(true);
+    let [articles, setArticles] = useState(fake);
 
     // 刷新页面
     const refresh = async () => {
         try {
-            await sleep(1000);
+            let length = Math.random() * 10 + 10;
+            fake = [];
+            for (let i = 0; i < length; i++) {
+                fake[i] = buildFake();
+            }
+            setArticles(fake);
             // 还原是否有更多评论的状态
             setHasMore(true);
         } catch (err) {
@@ -27,9 +61,9 @@ export default memo(function Homepage() {
         }
     }
 
+    // 加载更多Article
     const loadMore = async (tabIndex: number) => {
         await sleep(1000);
-        // Toast.show('刷新了页面' + tabIndex);
         setHasMore(false);
     }
 
@@ -57,14 +91,26 @@ export default memo(function Homepage() {
                 <PullToRefresh onRefresh={refresh}>
                     <Tabs defaultActiveKey='1'>
                         <Tabs.Tab title='推荐' key='1'>
-                            <TabPage hasMore={hasMore} loadMore={loadMore.bind(null, 1)} />
+                            <TabPage articles={articles} hasMore={hasMore} loadMore={loadMore.bind(null, 1)} />
                         </Tabs.Tab>
-                        <Tabs.Tab title='旅行' key='2'> 2 </Tabs.Tab>
-                        <Tabs.Tab title='美食' key='3'> 3 </Tabs.Tab>
-                        <Tabs.Tab title='时尚' key='4'> 4 </Tabs.Tab>
-                        <Tabs.Tab title='彩妆' key='5'> 5 </Tabs.Tab>
-                        <Tabs.Tab title='高效' key='6'> 6 </Tabs.Tab>
-                        <Tabs.Tab title='护肤' key='7'> 7 </Tabs.Tab>
+                        <Tabs.Tab title='旅行' key='2'>
+                            <TabPage articles={articles.slice(5)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
+                        <Tabs.Tab title='美食' key='3'>
+                            <TabPage articles={articles.slice(7)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
+                        <Tabs.Tab title='时尚' key='4'>
+                            <TabPage articles={articles.slice(2)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
+                        <Tabs.Tab title='彩妆' key='5'>
+                            <TabPage articles={articles.slice(6)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
+                        <Tabs.Tab title='高效' key='6'>
+                            <TabPage articles={articles.slice(1)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
+                        <Tabs.Tab title='护肤' key='7'>
+                            <TabPage articles={articles.slice(8)} hasMore={hasMore} loadMore={loadMore.bind(null, 2)} />
+                        </Tabs.Tab>
                     </Tabs>
                 </PullToRefresh>
             </div>
