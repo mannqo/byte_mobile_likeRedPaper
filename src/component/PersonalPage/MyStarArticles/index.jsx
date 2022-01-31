@@ -1,13 +1,13 @@
 import React, { memo, useEffect, useState } from 'react';
-import TabPage from '../../../TabPage';
+import TabPage from '../../../page/TabPage';
 import cookie from 'react-cookies'
-import { getStarArticles } from '../../../../services/article';
+import { getStaredArticles } from '../../../services/article';
 
-export default memo(function MyStarArticle() {
+export default memo(function MyStarArticle(props) {
   const [starArticles, setStarArticles] = useState([]);
-  const { userId } = cookie.load('userInfo');
+  const { userId } = props;
   useEffect(async () => {
-    const res = await getStarArticles({ userId });
+    const res = await getStaredArticles({ userId });
     const articles = res.staredArticles;
     setStarArticles(articles)
   }, [userId])

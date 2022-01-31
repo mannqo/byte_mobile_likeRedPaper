@@ -1,7 +1,6 @@
 import { Redirect } from "react-router-dom";
 import BeLiked from "../page/BeLiked";
 import ChatRecord from "../page/ChatRecord";
-import CreateChatting from "../page/CreateChatting";
 import Fans from "../page/Fans";
 import PostDetail from "../page/PostDetail";
 import Search from "../page/Search";
@@ -13,17 +12,20 @@ import Login from "../page/Login";
 import Follows from "../page/Follows";
 import EditPage from "../page/EdifPage";
 import LikeArticle from "../page/LikeArticles";
+import OtherPage from "../page/OtherPage";
+import cookie from 'react-cookies';
 
+ 
 const routes = [
-    {
-        path: "/login",
-        exact: true,
-        component: Login
-    },
     {
         path: "/",
         exact: true,
         render: () => <Redirect to="/login" />
+    },
+    {
+        path: "/login",
+        exact: true,
+        component: Login
     },
     {
         path: "/tabbar",
@@ -48,6 +50,7 @@ const routes = [
                 path: "/tabbar/me",
                 exact: true,
                 component: PersonalCenter,
+                userId: cookie.load('userInfo').userId,
             },
         ]
     },
@@ -66,6 +69,13 @@ const routes = [
     {
         path: "/message/like",
         component: BeLiked
+    },
+    {
+        path: "/message/chat",
+        exact: true,
+        component: Follows,
+        content: '发私信',
+        style: 'none',
     },
     // 个人中心
     {
@@ -86,17 +96,18 @@ const routes = [
         component: EditPage
     },
     {
-        path:"/person/like",
+        path: "/person/like",
         exact: true,
         component: LikeArticle,
     },
     {
-        path: "/search",
-        component: Search,
+        path: "/other/page",
+        exact: true,
+        component: OtherPage
     },
     {
-        path: "/createChatting",
-        component: CreateChatting
+        path: "/search",
+        component: Search,
     },
     {
         path: "/post/detail/:articleId",

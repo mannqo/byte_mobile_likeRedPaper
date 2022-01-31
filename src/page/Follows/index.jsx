@@ -11,7 +11,7 @@ export default memo(function Fans(props) {
     return (
         <>
             <NavBar onBack={back} > {props.route.content} </NavBar>
-            <FollowsList />
+            <FollowsList style={props.route.style}/>
         </>
     )
 })
