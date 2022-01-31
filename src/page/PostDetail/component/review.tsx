@@ -13,10 +13,12 @@ import { getFullUserInfo } from "../../../services/users";
 
 export function ReviewArea({
     reviews,
+    likedReviews,
     enterUserHomePage,
     reviewCallback
 }: {
     reviews: Review[],
+    likedReviews: string[],
     enterUserHomePage: (userName: string) => void,
     reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
 }) {
@@ -24,6 +26,7 @@ export function ReviewArea({
         {reviews.map((review, idx) =>
             <ReviewItem
                 info={review}
+                likedReviews={likedReviews}
                 enterUserHomePage={enterUserHomePage}
                 reviewCallback={reviewCallback}
                 key={idx}
@@ -32,6 +35,7 @@ export function ReviewArea({
                     {review.reviewList.map((subReview, idx) =>
                         <ReviewItem
                             info={subReview}
+                            likedReviews={likedReviews}
                             enterUserHomePage={enterUserHomePage}
                             reviewCallback={reviewCallback}
                             key={idx}
@@ -51,6 +55,7 @@ export function ReviewArea({
 
 export function ReviewItem({
     info: { authorInfo, content, postDate, likes, reviewId, parentReviewId, _id },
+    likedReviews,
     enterUserHomePage,
     reviewCallback,
     children,
@@ -58,14 +63,13 @@ export function ReviewItem({
     replyTo,
 }: {
     info: Review,
+    likedReviews: string[],
     enterUserHomePage: (userName: string) => void,
     reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
     children?: React.ReactElement<any, any>,
     subReview?: boolean,
     replyTo?: string,
 }) {
-    const userInfo = cookie.load('userInfo') as UserFullInfo;
-
     const subReviewStyle = {
         paddingLeft: '40px',
         marginTop: '8px'
@@ -74,16 +78,18 @@ export function ReviewItem({
     const userId = 1;
 
     // State
-    let [liked, setLiked] = useState(userInfo.likedReviews.includes(_id));
-
-    // Effect
-    // 效率极差！！
+    let [liked, setLiked] = useState(false);
+    let [hasLiked, setHasLiked] = useState(false);
     useEffect(() => {
-        (async () => {
-            const json = await getFullUserInfo({ userId: userInfo.userId });
-            cookie.save('userInfo', json.user, {});
-        })();
-    }, [liked]);
+        if (likedReviews.includes(_id)) {
+            setLiked(true);
+            setHasLiked(true);
+        }
+    }, [likedReviews]);
+
+    if (hasLiked && typeof likes === 'number') {
+        likes -= 1;
+    }
 
     // 喜欢按钮
     const likeBtn = async () => {
