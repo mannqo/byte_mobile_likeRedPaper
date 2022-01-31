@@ -324,7 +324,7 @@ export default function PostDetail() {
     return (
         <Container>
             {/* 顶部导航栏 */}
-            <NavBar onBack={back} right={right}>
+            <NavBar onBack={back} right={right} className="nav">
                 <Space
                     className="top"
                     align="center"
@@ -336,52 +336,54 @@ export default function PostDetail() {
                 </Space>
             </NavBar>
             {/* 主体（文章详情&评论区） */}
-            <PullToRefresh onRefresh={refresh}>
-                {/* 轮播图 */}
-                {swiperItems.length > 0 ? <Swiper rubberband={false} style={{ '--track-padding': ' 0 0 12px' }}>{swiperItems}</Swiper> : undefined}
-                {/* 文章主体（包括评论） */}
-                <article>
-                    {/* 文章详情 */}
-                    <h3>{article.title}</h3>
-                    <div>{article.content}</div>
-                    {tagItems.length > 0 ? <Space block wrap={true} style={{ '--gap-vertical': '0' }}>{tagItems}</Space> : undefined}
-                    <Space block justify="between" align="center">
-                        <span className="date">{article.postDate}</span>
-                        <Button
-                            size="mini"
-                            fill="outline"
-                            shape="rounded"
-                            color="default"
-                            onClick={dislikeBtn}>
-                            <FrownOutline /> 不喜欢
-                        </Button>
-                    </Space>
-                    {/* 过渡 */}
-                    <hr />
-                    {/* 中部评论工具栏 */}
-                    <Space block>{`共 ${article.reviews} 条评论`}</Space>
-                    <Space className="review-space" block align="center">
-                        <MyAvatar src={userInfo.avatar} />
-                        <div onClick={() => reviewBtn(authorInfo.userId)} style={{ flexGrow: '1' }}>
-                            <Input
-                                placeholder="说点什么吧，万一火了呢~"
-                                disabled
-                                style={{
-                                    '--font-size': '0.8rem',
-                                    backgroundColor: 'rgb(204, 204, 204, 0.4)',
-                                    '--placeholder-color': 'grey',
-                                    padding: '4px 16px',
-                                    borderRadius: 'calc(0.8rem + 4px)',
-                                    cursor: 'text'
-                                }}
-                            />
-                        </div>
-                    </Space>
-                    {/* 评论展示区域 */}
-                    <ReviewArea reviews={reviews} likedReviews={likedReviews} enterUserHomePage={gotoUserPage} reviewCallback={reviewBtn} />
-                    <InfiniteScroll hasMore={hasMoreReviews} loadMore={() => loadMoreReviews()} />
-                </article>
-            </PullToRefresh>
+            <div className="content">
+                <PullToRefresh onRefresh={refresh}>
+                    {/* 轮播图 */}
+                    {swiperItems.length > 0 ? <Swiper rubberband={false} style={{ '--track-padding': ' 0 0 12px' }}>{swiperItems}</Swiper> : undefined}
+                    {/* 文章主体（包括评论） */}
+                    <article>
+                        {/* 文章详情 */}
+                        <h3>{article.title}</h3>
+                        <div>{article.content}</div>
+                        {tagItems.length > 0 ? <Space block wrap={true} style={{ '--gap-vertical': '0' }}>{tagItems}</Space> : undefined}
+                        <Space block justify="between" align="center">
+                            <span className="date">{article.postDate}</span>
+                            <Button
+                                size="mini"
+                                fill="outline"
+                                shape="rounded"
+                                color="default"
+                                onClick={dislikeBtn}>
+                                <FrownOutline /> 不喜欢
+                            </Button>
+                        </Space>
+                        {/* 过渡 */}
+                        <hr />
+                        {/* 中部评论工具栏 */}
+                        <Space block>{`共 ${article.reviews} 条评论`}</Space>
+                        <Space className="review-space" block align="center">
+                            <MyAvatar src={userInfo.avatar} />
+                            <div onClick={() => reviewBtn(authorInfo.userId)} style={{ flexGrow: '1' }}>
+                                <Input
+                                    placeholder="说点什么吧，万一火了呢~"
+                                    disabled
+                                    style={{
+                                        '--font-size': '0.8rem',
+                                        backgroundColor: 'rgb(204, 204, 204, 0.4)',
+                                        '--placeholder-color': 'grey',
+                                        padding: '4px 16px',
+                                        borderRadius: 'calc(0.8rem + 4px)',
+                                        cursor: 'text'
+                                    }}
+                                />
+                            </div>
+                        </Space>
+                        {/* 评论展示区域 */}
+                        <ReviewArea reviews={reviews} likedReviews={likedReviews} enterUserHomePage={gotoUserPage} reviewCallback={reviewBtn} />
+                        <InfiniteScroll hasMore={hasMoreReviews} loadMore={() => loadMoreReviews()} />
+                    </article>
+                </PullToRefresh>
+            </div>
             {/* 底部fixed栏 */}
             <Space className="bottom" block align="center">
                 <div onClick={() => reviewBtn(authorInfo.userId)}>
@@ -571,6 +573,18 @@ const fillReviewAuthorInfo = async (review: Review) => {
 const Container = styled.div` 
     *{
         box-sizing: border-box;
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 999;
+    }
+
+    .content {
+        margin-top: 45px;
     }
 
     button[type="button"]{
