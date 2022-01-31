@@ -1,11 +1,11 @@
 import { Avatar, Image, Space, Toast } from "antd-mobile";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Article, UserFullInfo, UserInfo } from "../../PostDetail";
+import { Article, converter, UserFullInfo, UserInfo } from "../../PostDetail";
 import { HeartOutline, HeartFill } from 'antd-mobile-icons';
 import { getBaseUserInfo, getFullUserInfo } from "../../../services/users";
 import { ExecuteError } from "../../../services/axios";
-import { likeArticle, unlikeArticle } from "../../../services/article";
+import { getLikedArticles, likeArticle, unlikeArticle } from "../../../services/article";
 import cookie from 'react-cookies';
 import { useHistory } from "react-router-dom";
 
@@ -13,6 +13,9 @@ export default function ArticleCard({ article }: { article: Article }) {
     const userInfo = cookie.load('userInfo') as UserFullInfo;
     if (!userInfo) window.location.replace('/#/login');
 
+    // 格式化
+    converter(article);
+    
     const history = useHistory();
 
     // State
@@ -27,19 +30,17 @@ export default function ArticleCard({ article }: { article: Article }) {
     useEffect(() => {
         updateAuthorInfo();
     }, [])
-    useEffect(() => {
-        (async () => {
-            const json = await getFullUserInfo({ userId: userInfo.userId });
-            cookie.save('userInfo', json.user, {});
-        })();
-    }, [liked])
 
     // 更新文章作者信息
     const updateAuthorInfo = async () => {
         try {
             let userJson = (await getBaseUserInfo({ userId: article.authorId })).user as UserInfo;
             setAuthorInfo(userJson);
-            setLiked(userInfo.likedArticles.includes(article._id));
+            const likedArticles = (await getLikedArticles({ userId: userInfo.userId })).likedArticles.map((i: any) => i._id);;
+            setLiked(likedArticles.includes(article._id));
+            if (likedArticles.includes(article._id) && typeof article.likes === 'number') {
+                article.likes -= 1;
+            }
         } catch (err) {
             console.log((err as ExecuteError).message);
         }

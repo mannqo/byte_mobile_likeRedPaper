@@ -47,3 +47,11 @@ export function unlikeReview(option) {
         data: option
     })
 }
+
+export function getLikedReviews(option) {
+    return request({
+        method: 'GET',
+        url: '/review/getLike',
+        params: option
+    })
+}

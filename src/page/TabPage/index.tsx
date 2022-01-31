@@ -1,40 +1,16 @@
 import { Article } from "../PostDetail";
-import Mock from 'mockjs';
 import styled from "styled-components";
 import { InfiniteScroll } from "antd-mobile";
 import ArticleCard from "./component/ArticleCard";
 
-const buildFake = () => {
-    let data = Mock.mock({
-        title: '@title',
-        content: '@paragraph',
-        'likes|0-20000': 20000,
-        postDate: '@datetime',
-        'articleId|1-2': 2,
-        images: [
-            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1620385114079.png',
-            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1611837869906.png',
-            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1612394877886.png',
-            'https://cdn.jsdelivr.net/gh/tagbug/demo@latest/img/1636805552641.jpg',
-        ],
-        tags: [],
-        stars: 0,
-        reviews: 0,
-    })
-    return data as Article;
-}
-
-let articles: Article[] = [];
-for (let i = 0; i < 10; i++) {
-    articles[i] = buildFake();
-}
-
 export default function TabPage({
     hasMore,
-    loadMore
+    loadMore,
+    articles,
 }: {
     hasMore: boolean,
-    loadMore: Function
+    loadMore: Function,
+    articles: Article[]
 }) {
     return <Container>
         <div className="page">
