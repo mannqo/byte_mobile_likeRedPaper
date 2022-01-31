@@ -19,7 +19,7 @@ export function ReviewArea({
 }: {
     reviews: Review[],
     likedReviews: string[],
-    enterUserHomePage: (userName: string) => void,
+    enterUserHomePage: (userId: number) => void,
     reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
 }) {
     return (<>
@@ -64,7 +64,7 @@ export function ReviewItem({
 }: {
     info: Review,
     likedReviews: string[],
-    enterUserHomePage: (userName: string) => void,
+    enterUserHomePage: (userId: number) => void,
     reviewCallback: (userId: number, userName?: string, parentReviewId?: number) => void,
     children?: React.ReactElement<any, any>,
     subReview?: boolean,
@@ -112,7 +112,7 @@ export function ReviewItem({
             block
             align="start"
         >
-            <MyAvatar src={authorInfo.avatar} onClick={() => enterUserHomePage(authorInfo.nickname)} />
+            <MyAvatar src={authorInfo.avatar} onClick={() => enterUserHomePage(authorInfo.userId)} />
             <Space
                 direction="vertical"
                 style={{
@@ -121,7 +121,7 @@ export function ReviewItem({
             >
                 <div className="review-author">
                     <span
-                        onClick={() => enterUserHomePage(authorInfo.nickname)}
+                        onClick={() => enterUserHomePage(authorInfo.userId)}
                         style={{ cursor: 'pointer' }}
                     >{authorInfo.nickname}</span>
                 </div>

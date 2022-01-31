@@ -15,7 +15,7 @@ export default function ArticleCard({ article }: { article: Article }) {
 
     // 格式化
     converter(article);
-    
+
     const history = useHistory();
 
     // State
@@ -25,6 +25,7 @@ export default function ArticleCard({ article }: { article: Article }) {
         userId: 1
     });
     let [liked, setLiked] = useState(false);
+    let [likes, setLikes] = useState(article.likes);
 
     // Effect
     useEffect(() => {
@@ -38,8 +39,8 @@ export default function ArticleCard({ article }: { article: Article }) {
             setAuthorInfo(userJson);
             const likedArticles = (await getLikedArticles({ userId: userInfo.userId })).likedArticles.map((i: any) => i._id);;
             setLiked(likedArticles.includes(article._id));
-            if (likedArticles.includes(article._id) && typeof article.likes === 'number') {
-                article.likes -= 1;
+            if (likedArticles.includes(article._id) && typeof likes === 'number') {
+                setLikes(likes - 1);
             }
         } catch (err) {
             console.log((err as ExecuteError).message);
@@ -53,7 +54,7 @@ export default function ArticleCard({ article }: { article: Article }) {
 
     // 跳转到作者个人主页
     const turnToUserPage = () => {
-        Toast.show('跳转到' + authorInfo.nickname + '的个人主页');
+        history.push('/other/page/' + authorInfo.userId);
     }
 
     // 喜欢按钮
@@ -99,7 +100,7 @@ export default function ArticleCard({ article }: { article: Article }) {
                         {liked ? < HeartFill color="red" /> :
                             <HeartOutline />}
                         {
-                            typeof article.likes === 'number' ? (article.likes + (liked ? 1 : 0)) : article.likes
+                            typeof likes === 'number' ? (likes + (liked ? 1 : 0)) : article.likes
                         }
                     </Space>
                 </Space>
