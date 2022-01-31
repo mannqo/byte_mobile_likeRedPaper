@@ -64,7 +64,11 @@ export function unstarArticle(option) {
     })
 }
 
+<<<<<<< HEAD
 export function getLikeArticles(option) {
+=======
+export function getLikedArticles(option) {
+>>>>>>> f2631a5cab7278c4d29fac6fd9875f62f73fc267
     return request({
         method: 'GET',
         url: '/article/getLike',
@@ -72,10 +76,18 @@ export function getLikeArticles(option) {
     })
 }
 
+<<<<<<< HEAD
 export function getStarArticles(option) {
+=======
+export function getStaredArticles(option) {
+>>>>>>> f2631a5cab7278c4d29fac6fd9875f62f73fc267
     return request({
         method: 'GET',
         url: '/article/getStar',
         params: option
     })
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f2631a5cab7278c4d29fac6fd9875f62f73fc267

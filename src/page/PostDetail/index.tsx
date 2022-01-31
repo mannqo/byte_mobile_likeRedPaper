@@ -16,9 +16,9 @@ import styled from "styled-components";
 import MyAvatar from "./component/MyAvatar";
 import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
-import { getArticleById, likeArticle, starArticle, unlikeArticle, unstarArticle } from "../../services/article";
-import { cancelFollow, followOthers, getBaseUserInfo, getFullUserInfo } from "../../services/users";
-import { postReview } from "../../services/review";
+import { getArticleById, likeArticle, getLikedArticles, starArticle, unlikeArticle, unstarArticle, getStaredArticles } from "../../services/article";
+import { cancelFollow, followOthers, getBaseUserInfo, getFollowsList, getFullUserInfo } from "../../services/users";
+import { getLikedReviews, likeReview, postReview } from "../../services/review";
 import { ExecuteError } from "../../services/axios";
 import cookie from 'react-cookies';
 
@@ -99,6 +99,7 @@ export default function PostDetail() {
     let [followed, setFollowed] = useState(false);
     let [liked, setLiked] = useState(false);
     let [stared, setStared] = useState(false);
+    let [likedReviews, setLikedReviews] = useState<string[]>([]);
     let [popupVisible, setPopupVisible] = useState(false);
     let [showPostBtn, setShowPostBtn] = useState(false);
     let [inputValue, setInputValue] = useState('');
@@ -114,13 +115,6 @@ export default function PostDetail() {
     useEffect(() => {
         refresh();
     }, []);
-    // 效率极差！！
-    useEffect(() => {
-        (async () => {
-            const json = await getFullUserInfo({ userId: userInfo.userId });
-            cookie.save('userInfo', json.user, {});
-        })();
-    }, [followed, liked, stared, reviews])
 
     // 返回上一级按钮
     const back = () => {
@@ -138,6 +132,10 @@ export default function PostDetail() {
             }
             const authorJson = (await getBaseUserInfo({ userId: article.authorId })).user;
             authorJson.userId = article.authorId;
+            const followsList = (await getFollowsList({ userId: userInfo.userId })).followsList.map((i: any) => i.userId);
+            const likedArticles = (await getLikedArticles({ userId: userInfo.userId })).likedArticles.map((i: any) => i._id);;
+            const staredArticles = (await getStaredArticles({ userId: userInfo.userId })).staredArticles.map((i: any) => i._id);;
+            const reviews = (await getLikedReviews({ userId: userInfo.userId })).likedReviews.map((i: any) => i._id);;
             // 排序
             sorter(reviewJson);
             reviewJson.forEach(function f(item) {
@@ -150,12 +148,19 @@ export default function PostDetail() {
                 item.reviewList.forEach(f);
             })
             // 更新state
+            setLiked(likedArticles.includes(article._id));
+            if (likedArticles.includes(article._id) && typeof article.likes === 'number') {
+                article.likes -= 1;
+            }
+            setStared(staredArticles.includes(article._id));
+            if (staredArticles.includes(article._id) && typeof article.stars === 'number') {
+                article.stars -= 1;
+            }
             setArticle(article);
             setReviews(reviewJson);
             setAuthorInfo(authorJson);
-            setFollowed(userInfo.follows.includes(authorInfo.userId));
-            setLiked(userInfo.likedArticles.includes(article._id));
-            setStared(userInfo.staredArticles.includes(article._id));
+            setFollowed(followsList.includes(authorInfo.userId));
+            setLikedReviews(reviews);
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);
         } catch (err) {
@@ -373,7 +378,7 @@ export default function PostDetail() {
                         </div>
                     </Space>
                     {/* 评论展示区域 */}
-                    <ReviewArea reviews={reviews} enterUserHomePage={gotoUserPage} reviewCallback={reviewBtn} />
+                    <ReviewArea reviews={reviews} likedReviews={likedReviews} enterUserHomePage={gotoUserPage} reviewCallback={reviewBtn} />
                     <InfiniteScroll hasMore={hasMoreReviews} loadMore={() => loadMoreReviews()} />
                 </article>
             </PullToRefresh>
@@ -478,7 +483,7 @@ export default function PostDetail() {
 // 美化过万数字
 const parseNum = (num: number | string) => {
     if (typeof num === 'string') {
-        num = parseFloat(num);
+        return num;
     }
     if (num < 10000) {
         return num;
@@ -523,7 +528,7 @@ const parseDate = (dateStr: string) => {
 }
 
 // Num和Date格式转换器
-const converter = (obj: { likes?: number | string, stars?: number | string, reviews?: number | string | Array<any>, postDate?: string }) => {
+export const converter = (obj: { likes?: number | string, stars?: number | string, reviews?: number | string | Array<any>, postDate?: string }) => {
     if (obj.likes !== undefined) {
         obj.likes = parseNum(obj.likes);
     }
