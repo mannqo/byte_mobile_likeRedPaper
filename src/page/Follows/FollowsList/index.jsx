@@ -4,7 +4,8 @@ import cookie from 'react-cookies';
 import { getFollowsList } from '../../../services/users';
 import FollowsItem from './FollowsItem';
 
-export default memo(function FollowsList() {
+export default memo(function FollowsList(props) {
+    const { style } = props;
     const [followsList, setFollowsList] = useState([]);
     const { userId } = cookie.load('userInfo');
 
@@ -15,12 +16,12 @@ export default memo(function FollowsList() {
         } catch (err) {
             console.log(err);
         }
-    }, [userId])   
+    }, [userId])
     return (
-        <List> 
+        <List>
             {
                 followsList && followsList.map(user => (
-                    <FollowsItem key={user.userId} userInfo={user} />
+                    <FollowsItem key={user.userId} userInfo={user} style={style} />
                 ))
             }
         </List>

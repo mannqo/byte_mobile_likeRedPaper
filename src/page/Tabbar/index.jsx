@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { TabBar } from 'antd-mobile'
 import styled from 'styled-components';
 import {
@@ -12,12 +11,12 @@ import {
 } from 'antd-mobile-icons'
 import { renderRoutes } from 'react-router-config';
 
-const Bottom: FC = () => {
+const Bottom = () => {
     const history = useHistory()
     const location = useLocation()
     const { pathname } = location;
 
-    const setRouteActive = (value: string) => {
+    const setRouteActive = (value) => {
         history.push(value)
     }
 
@@ -49,7 +48,7 @@ const Bottom: FC = () => {
 }
 
 
-const Tabbar = (props: any) => {
+const Tabbar = (props) => {
 
     const route = props.route;
 

@@ -16,6 +16,7 @@ export default memo(function Login() {
     const onFinish = async (user) => {
         try {
             const res = await login(user);
+            console.log(res);
             Toast.show({
                 content: res.msg,
                 afterClose: async () => {

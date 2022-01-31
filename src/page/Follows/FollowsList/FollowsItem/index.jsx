@@ -2,9 +2,11 @@ import { List, Image, Button } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import { cancelFollow, followOthers, getFollowsList } from '../../../../services/users';
 import cookie from 'react-cookies';
+import { useHistory } from 'react-router-dom';
 
 export default memo(function FollowsItem(props) {
     const id = cookie.load('userInfo').userId;
+    const history = useHistory();
     const { userInfo } = props;
     const { userId, nickname, avatar, description } = userInfo;
     const followStatus = {
@@ -33,6 +35,9 @@ export default memo(function FollowsItem(props) {
         }
 
     }
+    const toPersonalPage = async () => {
+        history.push('/other/page?userId=' + userId);
+    }
 
     useEffect(async () => {
         const res = await getFollowsList({ userId });
@@ -45,6 +50,7 @@ export default memo(function FollowsItem(props) {
     return (
         <List.Item>
             <List.Item
+                onClick={toPersonalPage}
                 key={userId}
                 prefix={
                     <Image
@@ -61,7 +67,9 @@ export default memo(function FollowsItem(props) {
                         color='primary'
                         size='small'
                         fill={status.fill}
-                        onClick={followOrNot}>
+                        onClick={followOrNot}
+                        style={{ display: props.style }}
+                    >
                         {status.followStatus}
                     </Button>
                 }>
