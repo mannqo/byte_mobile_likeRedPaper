@@ -4,10 +4,9 @@ import { cancelFollow, followOthers, getFansList } from '../../../../services/us
 import cookie from 'react-cookies';
 import { useHistory } from 'react-router-dom';
 
-export default memo(function FansItem(props) {
+export default function FansItem({ userInfo }) {
   const id = cookie.load('userInfo').userId;
   const history = useHistory();
-  const { userInfo } = props;
   const { userId, nickname, avatar, description } = userInfo;
   const initialStatus = {
     status: 0,
@@ -74,4 +73,4 @@ export default memo(function FansItem(props) {
       {nickname}
     </List.Item>
   );
-});
+};

@@ -113,6 +113,12 @@ const routes = [
     },
     {
         path: "/search",
+        exact: true,
+        component: Search,
+    },
+    {
+        path: "/search/:keyWord",
+        exact: true,
         component: Search,
     },
     {
@@ -124,7 +130,8 @@ const routes = [
         path: "/article/post",
         exact: true,
         component: WriteArticle,
-    }
+    },
+    
 ]
 
 export default routes;

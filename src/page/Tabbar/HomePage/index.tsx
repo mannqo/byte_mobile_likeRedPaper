@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { NavBar, Space, Toast, Tabs, PullToRefresh } from 'antd-mobile';
-import { SearchOutline } from 'antd-mobile-icons';
+import { SearchOutline, AddOutline } from 'antd-mobile-icons';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import TabPage from '../../TabPage';
@@ -68,24 +68,30 @@ export default memo(function Homepage() {
     }
 
     const right = (
-        <div style={{ fontSize: 20 }}>
+        <div style={{ fontSize: 20, cursor: 'pointer' }}>
             <Space>
                 <SearchOutline onClick={goToSearch} />
             </Space>
         </div>
     )
 
-    const back = () => {
-        Toast.show({
-            content: '记录我的日常',
-            duration: 1000,
-        })
+    // 跳转发布文章
+    const gotoArticlePostPage = () => {
+        history.push('/article/post');
     }
 
     return (
         <TabsContainer>
             <div className='navbar'>
-                <NavBar right={right} onBack={back}> 首页 </NavBar>
+                <NavBar
+                    right={right}
+                    left={<AddOutline
+                        onClick={gotoArticlePostPage}
+                        style={{ fontSize: 20, cursor: 'pointer' }}
+                    />}
+                    backArrow={false}>
+                    首页
+                </NavBar>
             </div>
             <div className='main'>
                 <PullToRefresh onRefresh={refresh}>
@@ -127,6 +133,10 @@ const TabsContainer = styled.div`
         width: 100%;
         z-index: 999;
         background-color: #fff;
+    }
+
+    .adm-nav-bar-back {
+        margin-right: 0;
     }
 
     .main {
