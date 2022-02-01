@@ -6,8 +6,8 @@ export default memo(function Like(props) {
     const { like } = props
     return (
         <List>
-            {like.map(user => (
-                <StarItem key={user.postDate} info={user} />
+            {like.map(info => (
+                <StarItem key={info.postDate} info={info} />
             ))}
         </List>
     );

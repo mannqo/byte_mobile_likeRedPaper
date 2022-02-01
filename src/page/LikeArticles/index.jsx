@@ -1,10 +1,11 @@
-import { NavBar, Tabs } from 'antd-mobile';
+import { NavBar, Tabs, Toast } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getLikeUsersArticle, getStarUsersArticle } from '../../services/notice';
 import cookie from 'react-cookies';
 import Like from './Like';
 import Star from './Star';
+import { ExecuteError } from '../../services/axios';
 
 export default memo(function LikeArticle() {
     const history = useHistory();
@@ -18,7 +19,7 @@ export default memo(function LikeArticle() {
             setLike(likeRes.like);
             setStar(starRes.star);
         } catch (err) {
-            console.log(err);
+            Toast.show(err.message);
         }
     }, [userId])
     return (

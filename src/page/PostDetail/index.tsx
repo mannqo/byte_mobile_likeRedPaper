@@ -116,11 +116,6 @@ export default function PostDetail() {
         refresh();
     }, []);
 
-    // 返回上一级按钮
-    const back = () => {
-        history.go(-1);
-    }
-
     // 刷新页面
     const refresh = async () => {
         try {
@@ -216,7 +211,7 @@ export default function PostDetail() {
 
     // 跳转到搜索...
     const search = (text: string) => {
-        Toast.show('搜索：' + text);
+        history.push('/search/' + text);
     }
 
     // 喜欢按钮
@@ -324,7 +319,7 @@ export default function PostDetail() {
     return (
         <Container>
             {/* 顶部导航栏 */}
-            <NavBar onBack={back} right={right} className="nav">
+            <NavBar onBack={history.goBack} right={right} className="nav">
                 <Space
                     className="top"
                     align="center"

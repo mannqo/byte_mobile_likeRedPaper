@@ -4,36 +4,23 @@ import { getArticleById } from '../../../../services/article';
 import { getBaseUserInfo } from '../../../../services/users';
 
 export default memo(function StarItem(props) {
-    const { articleId, userId } = props.info;
-    const [user, setUser] = useState({});
-    const [article, setArticle] = useState({});
-    useEffect(async () => {
-        try {
-            const userRes = await getBaseUserInfo({ userId });
-            const articleRes = await getArticleById({ articleId })
-            setUser(userRes.user);
-            setArticle(articleRes.article);
-        } catch (err) {
-            console.log(err);
-        }
+    const { articleInfo, userInfo } = props.info;
 
-    }, [])
-    console.log(user);
     return (
         <List.Item
-            key={userId}
+            key={userInfo.userId}
             prefix={
                 <Image
-                    src={user.avatar}
+                    src={userInfo.avatar}
                     style={{ borderRadius: 20 }}
                     fit='cover'
                     width={40}
                     height={40}
                 />
             }
-            description={user.description}
+            description={userInfo.description}
         >
-            {user.nickname}
+            {userInfo.nickname}
         </List.Item>
     );
 });
