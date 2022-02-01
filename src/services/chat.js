@@ -3,7 +3,7 @@ import request from "./axios";
 export function sendMessage(option) {
     return request({
         method: 'POST',
-        url: '/sendMessage',
+        url: '/chat/send',
         data: option
     })
 }
@@ -11,7 +11,7 @@ export function sendMessage(option) {
 export function getChatList(option) {
     return request({
         method: 'GET',
-        url: '/getChatList',
+        url: '/chat/getList',
         params: option,
     })
 }
@@ -19,7 +19,7 @@ export function getChatList(option) {
 export function getChattingRecord(option) {
     return request({
         method: 'GET',
-        url: '/getChattingRecord',
+        url: '/chat/getRecord',
         params: option
     })
 }

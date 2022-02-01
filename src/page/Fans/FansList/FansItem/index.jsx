@@ -38,7 +38,7 @@ export default memo(function FansItem(props) {
   }
 
   const toPersonalPage = async () => {
-    history.push('/other/page?userId=' + userId);
+    history.push('/other/page/' + userId);
   }
 
   useEffect(async () => {

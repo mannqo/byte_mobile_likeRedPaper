@@ -21,7 +21,7 @@ export default memo(function EditInfo(props) {
     history.push('/person/edit');
   }
   const toSend = () => {
-    history.push('/message/detail?receiverId=' + userId);
+    history.push('/message/detail/' + userId);
   }
 
   return (

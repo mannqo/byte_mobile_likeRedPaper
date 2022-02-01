@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import { Input } from 'antd-mobile'
-import styled from 'styled-components'
-import { sendMessage } from '../../../services/chat'
+import styled from 'styled-components' 
 
-const userId = 1;
-const MessageItem = (props) => {
-    const { receiverId } = props;
+
+const MessageItem = (props) => { 
+    const { sendMessage } = props;
     const [value, setValue] = useState('')
     // 提交消息
     const submitMessage = async (e) => {
-        const { value } = e.target;
-        setValue(value)
         try {
-            await sendMessage({ userId, receiverId, message: value });
+            const { value } = e.target;
+            sendMessage(value);
+            setValue('');
+            
         } catch (err) {
             console.log(err);
         }
@@ -37,6 +37,7 @@ const InputWrapper = styled.div`
     position: fixed;
     z-index: 9999;
     bottom: 0;
-    border: 10px solid #ccc;
+    border: 10px solid #e0e0e0;
+    border-radius: 20px;
     background-color: #fff;
 `
