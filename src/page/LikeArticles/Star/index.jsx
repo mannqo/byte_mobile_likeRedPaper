@@ -7,8 +7,8 @@ export default memo(function Star(props) {
     console.log(star);
     return (
         <List >
-            {star.map(user => (
-                <StarItem key={user.postDate} info={user} />
+            {star.map(info => (
+                <StarItem key={info.postDate} info={info} />
             ))}
         </List>
     );
