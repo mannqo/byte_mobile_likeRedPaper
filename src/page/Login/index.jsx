@@ -1,7 +1,7 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { Form, Input, Button, Toast } from 'antd-mobile';
 import styled from 'styled-components';
-import { checkStatus, login } from '../../services/login';
+import { login } from '../../services/login';
 import { useHistory } from 'react-router-dom';
 import { getFullUserInfo } from '../../services/users';
 import cookie from 'react-cookies';

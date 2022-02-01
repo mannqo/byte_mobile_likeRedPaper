@@ -14,6 +14,7 @@ import EditPage from "../page/EdifPage";
 import LikeArticle from "../page/LikeArticles";
 import OtherPage from "../page/OtherPage";
 import cookie from 'react-cookies';
+import Comment from "../page/Comment";
 
  
 const routes = [
@@ -99,6 +100,11 @@ const routes = [
         path: "/person/like",
         exact: true,
         component: LikeArticle,
+    },
+    {
+        path: "/person/comment",
+        exact: true,
+        component: Comment
     },
     {
         path: "/other/page",

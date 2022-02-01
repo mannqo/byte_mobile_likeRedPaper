@@ -20,7 +20,7 @@ export default memo(function PersonalPage(props) {
             console.log(err);
         }
 
-    }, [])  
+    }, [userId])  
     return (
         <div>
             <ItemContainer className='ItemContainer'>

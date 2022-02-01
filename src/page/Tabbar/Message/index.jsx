@@ -19,9 +19,9 @@ export default memo(function Message() {
     )
     const getList = (e) => {
         switch (e) {
-            case '1': history.push('/person/follows'); break;
+            case '1': history.push('/person/like'); break;
             case '2': history.push('/person/fans'); break;
-            case '3': history.push('/person/like'); break;
+            case '3': history.push('/person/comment'); break;
             default: console.log(1);
         }
     }

@@ -9,7 +9,7 @@ export default memo(function BeLiked() {
     }
     return (
         <>
-            <NavBar onBack={back} > 收到的点赞和收藏 </NavBar>
+            <NavBar onBack={back} > 收到的评论和@ </NavBar>
         </>
 
     );
