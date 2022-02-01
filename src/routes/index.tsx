@@ -102,12 +102,7 @@ const routes = [
         component: LikeArticle,
     },
     {
-        path: "/person/comment",
-        exact: true,
-        component: Comment
-    },
-    {
-        path: "/other/page",
+        path: "/other/page/:userId",
         exact: true,
         component: OtherPage
     },
