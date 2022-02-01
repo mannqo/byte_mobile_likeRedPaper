@@ -2,9 +2,11 @@ import { List, Image, Button } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import { cancelFollow, followOthers, getFansList } from '../../../../services/users';
 import cookie from 'react-cookies';
+import { useHistory } from 'react-router-dom';
 
 export default memo(function FansItem(props) {
   const id = cookie.load('userInfo').userId;
+  const history = useHistory();
   const { userInfo } = props;
   const { userId, nickname, avatar, description } = userInfo;
   const initialStatus = {
@@ -34,6 +36,11 @@ export default memo(function FansItem(props) {
     }
 
   }
+
+  const toPersonalPage = async () => {
+    history.push('/other/page/' + userId);
+  }
+
   useEffect(async () => {
     const res = await getFansList({ userId });
     const { fansList } = res;
@@ -43,6 +50,7 @@ export default memo(function FansItem(props) {
   }, [id])
   return (
     <List.Item
+      onClick={toPersonalPage}
       key={userId}
       prefix={
         <Image

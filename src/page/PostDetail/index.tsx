@@ -17,8 +17,8 @@ import MyAvatar from "./component/MyAvatar";
 import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
 import { getArticleById, likeArticle, getLikedArticles, starArticle, unlikeArticle, unstarArticle, getStaredArticles } from "../../services/article";
-import { cancelFollow, followOthers, getBaseUserInfo, getFollowsList, getFullUserInfo } from "../../services/users";
-import { getLikedReviews, likeReview, postReview } from "../../services/review";
+import { cancelFollow, followOthers, getBaseUserInfo, getFollowsList } from "../../services/users";
+import { getLikedReviews, postReview } from "../../services/review";
 import { ExecuteError } from "../../services/axios";
 import cookie from 'react-cookies';
 

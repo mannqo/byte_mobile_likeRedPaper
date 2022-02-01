@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Article, converter, UserFullInfo, UserInfo } from "../../PostDetail";
 import { HeartOutline, HeartFill } from 'antd-mobile-icons';
-import { getBaseUserInfo, getFullUserInfo } from "../../../services/users";
+import { getBaseUserInfo } from "../../../services/users";
 import { ExecuteError } from "../../../services/axios";
 import { getLikedArticles, likeArticle, unlikeArticle } from "../../../services/article";
 import cookie from 'react-cookies';

@@ -15,7 +15,7 @@ import LikeArticle from "../page/LikeArticles";
 import OtherPage from "../page/OtherPage";
 import cookie from 'react-cookies';
 import WriteArticle from "../page/WriteArticle";
-
+import Comment from "../page/Comment";
 
 const routes = [
     {
@@ -57,7 +57,7 @@ const routes = [
     },
     // 我的消息
     {
-        path: "/message/detail",
+        path: "/message/detail/:receiverId",
         exact: true,
         component: ChatRecord,
     },
@@ -100,6 +100,11 @@ const routes = [
         path: "/person/like",
         exact: true,
         component: LikeArticle,
+    },
+    {
+        path: "/person/comment",
+        exact: true,
+        component: Comment,
     },
     {
         path: "/other/page/:userId",

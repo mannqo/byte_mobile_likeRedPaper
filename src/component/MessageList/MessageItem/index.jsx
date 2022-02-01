@@ -4,12 +4,12 @@ import { useHistory } from 'react-router-dom';
 
 
 
-export default memo(function MessageItem(props) { 
+export default memo(function MessageItem(props) {
     const { nickname, avatar, description, userId } = props.user;
 
     const history = useHistory();
     const goToMessageDetail = () => {
-        history.push('/message/detail?receiverId=' + userId);
+        history.push('/message/detail/' + userId);
     }
     return (
         <List.Item
