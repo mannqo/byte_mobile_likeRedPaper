@@ -14,8 +14,9 @@ import EditPage from "../page/EdifPage";
 import LikeArticle from "../page/LikeArticles";
 import OtherPage from "../page/OtherPage";
 import cookie from 'react-cookies';
+import WriteArticle from "../page/WriteArticle";
 
- 
+
 const routes = [
     {
         path: "/",
@@ -113,6 +114,11 @@ const routes = [
         path: "/post/detail/:articleId",
         exact: true,
         component: PostDetail,
+    },
+    {
+        path: "/article/post",
+        exact: true,
+        component: WriteArticle,
     }
 ]
 
