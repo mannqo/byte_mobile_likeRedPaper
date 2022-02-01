@@ -16,7 +16,7 @@ import OtherPage from "../page/OtherPage";
 import cookie from 'react-cookies';
 import Comment from "../page/Comment";
 
- 
+
 const routes = [
     {
         path: "/",
@@ -51,7 +51,7 @@ const routes = [
                 path: "/tabbar/me",
                 exact: true,
                 component: PersonalCenter,
-                userId: cookie.load('userInfo').userId,
+                userId: (cookie.load('userInfo') && cookie.load('userInfo').userId) || null,
             },
         ]
     },
