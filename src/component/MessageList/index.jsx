@@ -10,9 +10,6 @@ const MessageList = () => {
 
     useEffect(async () => {
 
-        
-
-
         try {
             const res = await getChatList({ userId });
             setChatList(res.chatList);

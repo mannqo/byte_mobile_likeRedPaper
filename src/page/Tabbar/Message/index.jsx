@@ -25,8 +25,6 @@ export default memo(function Message() {
         }
     }
 
-
-
     return (
         <>
             <NavBar right={right}>

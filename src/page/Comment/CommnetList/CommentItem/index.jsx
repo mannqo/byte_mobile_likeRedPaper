@@ -1,18 +1,22 @@
 import { List, Image } from 'antd-mobile';
 import React, { memo } from 'react';
 
-export default memo(function Item(props) {
-    const { articleInfo, userInfo } = props.info;
+export default memo(function CommentItem(props) {
+    const { articleInfo, reviews, userInfo } = props.info;
     const { images } = articleInfo;
-    const { type } = props;
+    const { parentReviewId, postDate } = reviews;
+    const { nickname, avatar } = userInfo;
     const displayStatus = images[0] ? 'block' : 'none';
+    const description = !parentReviewId ?
+        '评论了你的笔记'
+        : '回复了你的评论';
 
     return (
         <List.Item
-            key={userInfo.userId}
+            key={postDate}
             prefix={
                 <Image
-                    src={userInfo.avatar}
+                    src={avatar}
                     style={{ borderRadius: 20 }}
                     fit='cover'
                     width={40}
@@ -27,9 +31,9 @@ export default memo(function Item(props) {
                     style={{ display: displayStatus }}
                 />
             }
-            description={type + '了你的笔记'}
+            description={description}
         >
-            {userInfo.nickname}
+            {nickname}
         </List.Item >
     );
 });
