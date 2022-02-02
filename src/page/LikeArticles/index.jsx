@@ -20,8 +20,7 @@ export default memo(function LikeArticle() {
         } catch (err) {
             Toast.show(err.message);
         }
-    }, [userId])
-    console.log(like);
+    }, [userId]) 
     return (
         <div>
             <NavBar onBack={history.goBack} > 获赞与收藏 </NavBar>
