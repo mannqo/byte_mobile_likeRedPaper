@@ -1,14 +1,19 @@
 import { List, Image } from 'antd-mobile';
 import React, { memo } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export default memo(function Item(props) {
     const { articleInfo, userInfo } = props.info;
-    const { images } = articleInfo;
+    const { articleId, images } = articleInfo;
     const { type } = props;
     const displayStatus = images[0] ? 'block' : 'none';
-
+    const history = useHistory();
+    const toArticleDetail = () => {
+        history.push('/post/detail/' + articleId)
+    }
     return (
         <List.Item
+            onClick={toArticleDetail}
             key={userInfo.userId}
             prefix={
                 <Image
