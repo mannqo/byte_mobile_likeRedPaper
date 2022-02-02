@@ -4,8 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { getLikeUsersArticle, getStarUsersArticle } from '../../services/notice';
 import cookie from 'react-cookies';
 import Like from './Like';
-import Star from './Star';
-import { ExecuteError } from '../../services/axios';
+import Star from './Star'; 
 
 export default memo(function LikeArticle() {
     const history = useHistory();
@@ -22,6 +21,7 @@ export default memo(function LikeArticle() {
             Toast.show(err.message);
         }
     }, [userId])
+    console.log(like);
     return (
         <div>
             <NavBar onBack={history.goBack} > 获赞与收藏 </NavBar>

@@ -4,8 +4,9 @@ import cookie from 'react-cookies';
 import { useHistory } from 'react-router-dom';
 
 export const PropoverWrapper = (props) => {
+    // 这个userInfo是聊天对象的个人信息
     const { userInfo, chatRecord } = props;
-    const user = cookie.load('userInfo');
+    const user = cookie.load('userInfo');  // user是用户本人的个人信息
 
     return (
         <div className='popover'>
@@ -15,7 +16,7 @@ export const PropoverWrapper = (props) => {
                         <PopoverItem
                             key={record._id}
                             avatar={user.avatar}
-                            userId={userInfo.userId}
+                            userId={user.userId}
                             content={record.message}
                             direct='left'
                             classname='dialog leftDialog' />

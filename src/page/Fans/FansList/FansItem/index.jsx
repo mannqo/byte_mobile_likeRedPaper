@@ -49,10 +49,10 @@ export default function FansItem({ userInfo }) {
   }, [id])
   return (
     <List.Item
-      onClick={toPersonalPage}
       key={userId}
       prefix={
         <Image
+          onClick={toPersonalPage}
           src={avatar}
           style={{ borderRadius: 20 }}
           fit='cover'

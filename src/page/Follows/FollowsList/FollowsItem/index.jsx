@@ -9,6 +9,7 @@ export default memo(function FollowsItem(props) {
     const history = useHistory();
     const { userInfo } = props;
     const { userId, nickname, avatar, description } = userInfo;
+    const { style } = props;
     const followStatus = {
         status: 0,
         fill: 'solid',
@@ -22,7 +23,7 @@ export default memo(function FollowsItem(props) {
     const [status, setStatus] = useState(initialStatus);
     const followOrNot = async () => {
         try {
-            if (status.status) {
+            if (!status.status) {
                 await cancelFollow({ userId: id, followerId: userId })
                 setStatus(initialStatus);
             }
@@ -38,6 +39,9 @@ export default memo(function FollowsItem(props) {
     const toPersonalPage = async () => {
         history.push('/other/page/' + userId);
     }
+    const toPersonalChat = async () => {
+        history.push('/message/detail/' + userId);
+    }
 
     useEffect(async () => {
         const res = await getFollowsList({ userId });
@@ -50,10 +54,10 @@ export default memo(function FollowsItem(props) {
     return (
         <List.Item>
             <List.Item
-                onClick={toPersonalPage}
                 key={userId}
                 prefix={
                     <Image
+                        onClick={style === 'none' ? toPersonalChat : toPersonalPage}
                         src={avatar}
                         style={{ borderRadius: 20 }}
                         fit='cover'
@@ -68,7 +72,7 @@ export default memo(function FollowsItem(props) {
                         size='small'
                         fill={status.fill}
                         onClick={followOrNot}
-                        style={{ display: props.style }}
+                        style={{ display: style }}
                     >
                         {status.followStatus}
                     </Button>
