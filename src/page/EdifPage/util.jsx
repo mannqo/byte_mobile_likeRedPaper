@@ -33,8 +33,7 @@ export const userMapCN = {
     nickname: '名字',
     gender: '性别',
     birthday: '生日',
-    area: '地区',
-    profession: '职业',
+    area: '地区', 
     description: '简介',
     backGroundPicture: '背景图',
 }
@@ -43,42 +42,11 @@ export const userMapTip = {
     nickname: '请输入你的名字',
     gender: '请选择你的性别',
     birthday: '请选择你的生日',
-    area: '请选择你所在的地区',
-    profession: '请选择你的职业',
+    area: '请选择你所在的地区', 
     description: '有趣的简介可以吸引粉丝',
     backGroundPicture: '请选择你的背景图',
 }
-
-export const professionOptions = [
-    {
-        label: '时尚',
-        value: '时尚',
-        children: [
-            {
-                label: '时尚博主',
-                value: '时尚博主',
-            },
-            {
-                label: '设计师',
-                value: '设计师',
-            },
-        ],
-    },
-    {
-        label: '美妆',
-        value: '美妆',
-        children: [
-            {
-                label: '美妆博主',
-                value: '美妆博主',
-            },
-            {
-                label: '护肤博主',
-                value: '护肤博主',
-            },
-        ],
-    },
-]
+ 
 
 export const areaOptions = [
     {
@@ -169,24 +137,7 @@ export const EditContainer = styled.div`
                 }
             }
         }
-        .profession-wrap {
-            .profession-main {
-                display:flex;
-                margin-bottom:15px;
-                padding-left:25px;
-                .profession-item {
-                    display:flex;
-                    justify-content:center;
-                    align-items:center;
-                    padding:0 20px;
-                    height:45px;
-                    margin-right:10px;
-                    border-radius:20px;
-                    background-color:#f6f6f6;
-                    color:#1e1e1e;
-                }
-            }
-        }
+        
         .btn-wrap {
             display:flex;
             justify-content:space-around;

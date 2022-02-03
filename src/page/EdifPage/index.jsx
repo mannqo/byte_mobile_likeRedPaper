@@ -2,18 +2,16 @@ import { Form, NavBar, List, Modal, DatePicker, CascadePicker, Toast } from 'ant
 import React, { memo, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import UploadAvatar from './UploadAvatar';
-import { editMy, getBaseUserInfo, getFullUserInfo, upload } from '../../services/users';
+import { editMy, getBaseUserInfo, upload } from '../../services/users';
 import cookie from 'react-cookies';
 import { EditContainer } from './util';
-import { formData, parserDate, areaOptions, professionOptions, genderOptions, userMapCN, userMapTip, ToArr, handleDescription } from './util';
+import { formData, parserDate, areaOptions, genderOptions, userMapCN, userMapTip, ToArr, handleDescription } from './util';
 import BgPic from './BgPic';
 import FormNode from './FormNode';
-import FormPickerNode from './FormPickerNode';
 
 
 //待改成自动
 const pickerMapOption = {
-    profession: professionOptions,
     area: areaOptions,
     gender: genderOptions
 }
@@ -28,7 +26,6 @@ export default memo(function EditPage() {
     const [showDataSelect, setShowDataSelect] = useState(false);
     const [type, setType] = useState('name');
     const [tipText, settipText] = useState('');
-    const [profession, setProfession] = useState(userInfo.profession)
     const [form] = Form.useForm()
 
     useEffect(async () => {
@@ -36,30 +33,38 @@ export default memo(function EditPage() {
             const res = await getBaseUserInfo({ userId });
             const { user } = res;
             setUser(user);
-            setProfession(user.profession);
         } catch (err) {
             console.log(err);
         }
     }, [userId])
 
     const send = async (dataObj) => {
-        const fixUser = { userId, ...dataObj };
-        try {
-            const res = await editMy(fixUser);
-            const { msg } = res;
-            cancel();
-            setUser({ ...user, ...dataObj });  // 修改cookies 
-            cookie.save('userInfo', { ...user, ...dataObj });
-            Toast.show({
-                icon: 'success',
-                content: msg,
-            })
-        } catch (err) {
-            Toast.show({
-                icon: 'loadding',
-                content: '修改异常',
-            })
+        let flag = false;
+        Object.keys(dataObj).forEach((key) => {
+            if (user[key] !== dataObj[key]) {
+                flag = true;
+            }
+        })
+        if (flag) {
+            try {
+                const newUser = { userId, ...dataObj };
+                const res = await editMy(newUser);
+                const { msg } = res;
+                setUser({ ...user, ...dataObj });  // 修改cookies 
+                cookie.save('userInfo', { ...user, ...dataObj });
+                Toast.show({
+                    icon: 'success',
+                    content: msg,
+                })
+            } catch (err) {
+                Toast.show({
+                    icon: 'loadding',
+                    content: '修改异常',
+                })
+            }
         }
+        cancel();
+
 
     }
 
@@ -96,12 +101,6 @@ export default memo(function EditPage() {
                 const gender = value[0];
                 send({ gender });
                 break;
-
-            case 'profession':
-                const data = value[1];
-                setProfession([...profession, data]);
-                break;
-
             case 'area':
                 const area = value.join(' ');
                 send({ area });
@@ -109,14 +108,6 @@ export default memo(function EditPage() {
             default:
                 break;
         }
-    }
-
-    const showProfessionPicker = () => {
-        setShowSelect(true);
-    }
-
-    const professionConfirm = () => {
-        send({ profession });
     }
 
     const handleBackGround = async (e) => {
@@ -151,7 +142,6 @@ export default memo(function EditPage() {
                 <List.Item onClick={() => { showPicker('gender') }} extra={user.gender === '1' ? '男' : '女'}>性别</List.Item>
                 <List.Item className={user.birthday ? '' : 'list-item'} onClick={() => { showDataPicker('birthday') }} extra={user.birthday ? user.birthday : '请选择你的生日'}>生日</List.Item>
                 <List.Item className={user.area ? '' : 'list-item'} onClick={() => { showPicker('area') }} extra={user.area ? user.area : '请选择你所在的地区'}>地区</List.Item>
-                {/* <List.Item className={user.profession ? '' : 'list-item'} onClick={() => { showForm('profession') }} extra={user.profession ? user.profession.join(' ') : '选择职业'}>职业</List.Item> */}
                 <List.Item className={user.description ? '' : 'list-item'} onClick={() => { showForm('description') }} extra={user.description ? handleDescription(user.description) : '有趣的简介可以吸引粉丝'}>简介</List.Item>
                 <List.Item className={user.backGroundPicture ? '' : 'list-item'} onClick={() => { }} extra={(<BgPic user={user} handleBackGround={handleBackGround} />)}>背景图</List.Item>
             </List>
@@ -160,9 +150,7 @@ export default memo(function EditPage() {
                 visible={showModal}
                 getContainer={false}
                 title={userMapCN[type]}
-                content={type == 'profession'
-                    ? <FormPickerNode cancel={cancel} profession={profession} showProfessionPicker={showProfessionPicker} professionConfirm={professionConfirm} />
-                    : <FormNode send={send} form={form} tipText={tipText} type={type} cancel={cancel} />}
+                content={<FormNode send={send} form={form} tipText={tipText} type={type} cancel={cancel} />}
             />
             <DatePicker
                 visible={showDataSelect}
