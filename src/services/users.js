@@ -48,7 +48,7 @@ export function getFollowsList(option) {
     })
 }
 
-export function getBaseUserInfo(option) {
+export function getBaseUserInfo(option) { 
     return request({
         method: 'GET',
         url: '/user/baseInfo',
@@ -58,11 +58,34 @@ export function getBaseUserInfo(option) {
 
 /* 
  * params: userId
- */ 
+ */
 export function getFullUserInfo(option) {
     return request({
         method: 'GET',
         url: '/user/fullInfo',
         params: option,
+    })
+}
+
+
+/* 
+ * edit编辑接口
+*/
+export function editMy(option) {
+    return request({
+        method: 'POST',
+        url: '/user/edit',
+        data: option
+    })
+}
+
+export function upload(option) {
+    return request({
+        method: 'POST',
+        url: '/user/upload',
+        data: option,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
     })
 }

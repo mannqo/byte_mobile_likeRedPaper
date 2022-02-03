@@ -17,7 +17,7 @@ export default memo(function PersonalCenter(props) {
                 <MoreOutline />
             </Space>
         </div>
-    )  
+    )
     return (
         <div>
             <NavBar right={right} left={left} backArrow={false}></NavBar>
