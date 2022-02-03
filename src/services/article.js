@@ -79,3 +79,10 @@ export function getStaredArticles(option) {
         params: option
     })
 }
+
+export function getHomePageArticles() {
+    return request({
+        method: 'GET',
+        url: '/article/getHomePage',
+    })
+}

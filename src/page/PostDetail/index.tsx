@@ -541,7 +541,7 @@ export const converter = (obj: { likes?: number | string, stars?: number | strin
 }
 
 // 根据likes数和postDate排序，likes数优先，其次是postDate
-const sorter = (arr: Array<{ likes: number | string, postDate: string }>) => {
+export const sorter = (arr: Array<{ likes: number | string, postDate: string }>) => {
     // 从大到小排
     arr.sort((b, a) => {
         if (a.likes !== b.likes) {
