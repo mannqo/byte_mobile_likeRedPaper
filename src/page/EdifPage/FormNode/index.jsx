@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 
 
 export default memo(function FormNode(props) {
-    const { form,send, tipText, type, cancel } = props;
+    const { form, send, tipText, type, cancel } = props;
 
     const footer = (
         <div className='btn-wrap'>
