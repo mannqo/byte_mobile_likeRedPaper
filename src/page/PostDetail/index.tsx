@@ -154,7 +154,7 @@ export default function PostDetail() {
             setArticle(article);
             setReviews(reviewJson);
             setAuthorInfo(authorJson);
-            setFollowed(followsList.includes(authorInfo.userId));
+            setFollowed(followsList.includes(authorJson.userId));
             setLikedReviews(reviews);
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);

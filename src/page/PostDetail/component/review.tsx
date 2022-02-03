@@ -75,7 +75,7 @@ export function ReviewItem({
         marginTop: '8px'
     }
 
-    const userId = 1;
+    const { userId } = cookie.load('userInfo') as UserFullInfo;
 
     // State
     let [liked, setLiked] = useState(false);
