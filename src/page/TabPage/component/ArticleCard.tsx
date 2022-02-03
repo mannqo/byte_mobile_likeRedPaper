@@ -20,9 +20,9 @@ export default function ArticleCard({ article }: { article: Article }) {
 
     // State
     let [authorInfo, setAuthorInfo] = useState<UserInfo>({
-        avatar: "https://p26-passport.byteacctimg.com/img/user-avatar/0e548cb3e76082e4117d87bcd404bf16~300x300.image",
-        nickname: "YuYuYu🐟",
-        userId: 1
+        avatar: "",
+        nickname: "",
+        userId: 0
     });
     let [liked, setLiked] = useState(false);
     let [likes, setLikes] = useState(article.likes);
@@ -85,8 +85,8 @@ export default function ArticleCard({ article }: { article: Article }) {
             <div className="content">
                 <h3 onClick={turnToPostDetail} style={{ cursor: 'pointer' }}>{article.title}</h3>
                 {/* <div>{article.content}</div> */}
-                <Space align="center" justify="between" block>
-                    <Space align="center" onClick={turnToUserPage} style={{ cursor: 'pointer' }}>
+                <Space className="content-bottom" align="center" justify="between" block>
+                    <Space align="center" onClick={turnToUserPage} style={{ cursor: 'pointer' }} block>
                         <Avatar
                             src={authorInfo.avatar}
                             style={{
@@ -94,9 +94,9 @@ export default function ArticleCard({ article }: { article: Article }) {
                                 'borderRadius': '12px'
                             }}
                         />
-                        <div>{authorInfo.nickname}</div>
+                        <div style={{ textOverflow: 'ellipsis' }}>{authorInfo.nickname}</div>
                     </Space>
-                    <Space align="center" onClick={likeBtn} style={{ cursor: 'pointer' }}>
+                    <Space align="center" onClick={likeBtn} style={{ cursor: 'pointer', '--gap-horizontal': '3px' }} block>
                         {liked ? < HeartFill color="red" /> :
                             <HeartOutline />}
                         {
@@ -132,5 +132,11 @@ const Container = styled.div`
 
     .content > h3 {
         margin: 4px 0 8px;
+    }
+
+    .content-bottom > :first-child {
+        flex: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 `
