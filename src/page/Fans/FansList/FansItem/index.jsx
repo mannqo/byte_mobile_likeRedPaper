@@ -16,8 +16,9 @@ export default function FansItem({ userInfo }) {
   const followStatus = {
     status: 1,
     fill: 'solid',
-    followStatus: '已关注'
+    followStatus: '互相关注'
   }
+  
   const [status, setStatus] = useState(initialStatus);
 
   const followOrNot = async () => {

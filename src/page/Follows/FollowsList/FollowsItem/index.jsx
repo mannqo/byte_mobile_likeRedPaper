@@ -12,24 +12,33 @@ export default memo(function FollowsItem(props) {
     const { style } = props;
     const followStatus = {
         status: 0,
-        fill: 'solid',
-        followStatus: '互相关注'
+        fill: 'outline',
+        followStatus: '未关注'
     }
     const initialStatus = {
         status: 1,
         fill: 'solid',
         followStatus: '已关注'
     }
+    const followOtherStatus = {
+        status: 2,
+        fill: 'solid',
+        followStatus: '互相关注'
+    }
+
     const [status, setStatus] = useState(initialStatus);
     const followOrNot = async () => {
+        console.log(status.status);
         try {
-            if (!status.status) {
+            if (status.status) {
                 await cancelFollow({ userId: id, followerId: userId })
-                setStatus(initialStatus);
+                setStatus(followStatus);
             }
             else {
                 await followOthers({ userId: id, followerId: userId })
-                setStatus(followStatus)
+                const {followsList} = await getFollowsList({ userId });
+                if (followsList.includes(id)) setStatus(followOtherStatus)
+                else { setStatus(initialStatus) }
             }
         } catch (err) {
             console.log(err);
@@ -47,7 +56,7 @@ export default memo(function FollowsItem(props) {
         const res = await getFollowsList({ userId });
         const { followsList } = res;
         followsList.map(item => {
-            item.userId === id && setStatus(followStatus);
+            item.userId === id && setStatus(followOtherStatus);
         })
     }, [id])
 
