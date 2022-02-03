@@ -3,7 +3,7 @@ import ImageUploader, { ImageUploadItem } from "antd-mobile/es/components/image-
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { uploadImage } from "../../services/upload";
+import { revertUploadImage, uploadImage } from "../../services/upload";
 import { UserFullInfo } from "../PostDetail";
 import cookie from 'react-cookies';
 import { postArticle } from "../../services/article";
@@ -21,9 +21,42 @@ export default function WriteArticle() {
     const [content, setContent] = useState("");
     let tagText = "";
 
+    // 上传之前的检查
+    const beforeUpload = (files: File[]) => {
+        return files.filter(file => {
+            if (file.size > 10 * 1024 * 1024) {
+                Toast.show('请选择小于 10M 的图片');
+                return false;
+            }
+            return true;
+        })
+    }
+
     // 上传图片
     const imageUpload = async (file: File) => {
-        return (await uploadImage({ userId: userInfo.userId, file })).res as ImageUploadItem;
+        const data = new FormData();
+        data.append('image', file, file.name);
+        return (await uploadImage(data)) as ImageUploadItem;
+    }
+
+    // 撤销上传图片
+    const revertImageUpload = async (item: ImageUploadItem) => {
+        return Dialog.confirm({
+            content: '是否确认删除',
+        }).then(async confirmed => {
+            if (confirmed) {
+                try {
+                    const splited = item.url.split('/');
+                    const fileName = splited[splited.length - 1];
+                    await revertUploadImage({ fileName });
+                } catch (err) {
+                    Toast.show((err as ExecuteError).message);
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        })
     }
 
     // 添加Tag
@@ -62,17 +95,15 @@ export default function WriteArticle() {
     // 发布笔记
     const postArticleBtn = async () => {
         try {
-            console.log({
-                userId: userInfo.userId,
-                title,
-                content,
-                tags,
-            });
+            if (fileList.length === 0) {
+                throw new Error('请至少上传一张图片');
+            }
             await postArticle({
                 userId: userInfo.userId,
                 title,
                 content,
                 tags,
+                images: fileList.map(item => item.url)
             })
             Toast.show('发布成功');
             history.goBack();
@@ -107,14 +138,11 @@ export default function WriteArticle() {
                 value={fileList}
                 onChange={setFileList}
                 upload={imageUpload}
-                onDelete={() => {
-                    return Dialog.confirm({
-                        content: '是否确认删除',
-                    })
-                }}
+                onDelete={revertImageUpload}
                 multiple
                 maxCount={9}
                 showUpload={fileList.length < 9}
+                beforeUpload={beforeUpload}
                 onCountExceed={exceed => {
                     Toast.show(`最多选择 ${9} 张图片，你多选了 ${exceed} 张`)
                 }}
