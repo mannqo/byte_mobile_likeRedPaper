@@ -1,12 +1,39 @@
-import { NavBar, Space } from 'antd-mobile'
-import React, { memo  } from 'react'
-import { MoreOutline, SendOutline } from 'antd-mobile-icons' 
+import { Button, Modal, NavBar, Space, Toast } from 'antd-mobile'
+import React, { memo } from 'react'
+import { UploadOutline, SendOutline } from 'antd-mobile-icons'
 import PersonalPage from '../../../component/PersonalPage'
+import cookie from 'react-cookies';
+import { logout } from '../../../services/login';
+import { useHistory } from 'react-router-dom';
 
-export default memo(function PersonalCenter(props) {
+export default memo(function PersonalCenter() {
+    const history = useHistory();
+    const { userId } = cookie.load('userInfo');
+    const logOut = async () => {
+        Modal.confirm({
+            content: '确认登出吗',
+            onConfirm: async () => {
+                try {
+                    const res = await logout({ userId });
+                    console.log(res);
+                    Toast.show({
+                        icon: 'success',
+                        content: '登出成功',
+                    })
+                    cookie.remove('userInfo');
+                    history.push('/');
+                } catch (err) {
+                    Toast.show({
+                        icon: 'loading',
+                        content: '登出失败',
+                    })
+                }
+            },
+        })
+    }
     const right = (
         <div style={{ fontSize: 20 }}>
-            <Space>
+            <Space >
                 <SendOutline />
             </Space>
         </div>
@@ -14,14 +41,14 @@ export default memo(function PersonalCenter(props) {
     const left = (
         <div style={{ fontSize: 20 }}>
             <Space>
-                <MoreOutline />
+                <UploadOutline onClick={logOut} />
             </Space>
         </div>
     )
     return (
         <div>
             <NavBar right={right} left={left} backArrow={false}></NavBar>
-            <PersonalPage userId={props.route.userId} />
+            <PersonalPage userId={userId} />
         </div>
     )
 }) 

@@ -7,7 +7,7 @@ export default memo(function Star(props) {
     return (
         <List >
             {star.map(info => (
-                <Item key={info.postDate} type='收藏' info={info} />
+                <Item key={JSON.stringify(info.userInfo)} type='收藏' info={info} />
             ))}
         </List>
     );

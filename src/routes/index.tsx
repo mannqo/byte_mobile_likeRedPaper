@@ -12,8 +12,7 @@ import Login from "../page/Login";
 import Follows from "../page/Follows";
 import EditPage from "../page/EdifPage";
 import LikeArticle from "../page/LikeArticles";
-import OtherPage from "../page/OtherPage";
-import cookie from 'react-cookies';
+import OtherPage from "../page/OtherPage"; 
 import WriteArticle from "../page/WriteArticle";
 import Comment from "../page/Comment";
 
@@ -51,8 +50,7 @@ const routes = [
             {
                 path: "/tabbar/me",
                 exact: true,
-                component: PersonalCenter,
-                userId: (cookie.load('userInfo') && cookie.load('userInfo').userId) || null,
+                component: PersonalCenter, 
             },
         ]
     },
