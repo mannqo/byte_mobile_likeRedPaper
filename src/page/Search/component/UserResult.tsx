@@ -1,7 +1,5 @@
-import { List } from 'antd-mobile';
-import cookie from 'react-cookies';
-import FansItem from '../../Fans/FansList/FansItem';
-import { UserFullInfo } from '../../PostDetail';
+import { List } from 'antd-mobile'; 
+import FansItem from '../../Fans/FansList/FansItem'; 
 
 
 export default function UserResult({ userList }: { userList: any[] }) {

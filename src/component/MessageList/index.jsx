@@ -6,17 +6,18 @@ import cookie from 'react-cookies';
 
 const MessageList = () => {
     const [chatList, setChatList] = useState([]);
-    const { userId } = cookie.load('userInfo');
 
-    useEffect(async () => {
-
-        try {
-            const res = await getChatList({ userId });
-            setChatList(res.chatList);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const { userId } = cookie.load('userInfo');
+                const res = await getChatList({ userId });
+                setChatList(res.chatList);
+            } catch (err) {
+                console.log(err);
+            }
         }
-
+        fetchData();
     }, [])
     return (
         <List>

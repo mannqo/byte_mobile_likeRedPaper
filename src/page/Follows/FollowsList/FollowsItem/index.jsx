@@ -36,7 +36,7 @@ export default memo(function FollowsItem(props) {
             }
             else {
                 await followOthers({ userId: id, followerId: userId })
-                const {followsList} = await getFollowsList({ userId });
+                const { followsList } = await getFollowsList({ userId });
                 if (followsList.includes(id)) setStatus(followOtherStatus)
                 else { setStatus(initialStatus) }
             }
@@ -52,12 +52,19 @@ export default memo(function FollowsItem(props) {
         history.push('/message/detail/' + userId);
     }
 
-    useEffect(async () => {
-        const res = await getFollowsList({ userId });
-        const { followsList } = res;
-        followsList.map(item => {
-            item.userId === id && setStatus(followOtherStatus);
-        })
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFollowsList({ userId });
+                const { followsList } = res;
+                followsList.map(item => {
+                    item.userId === id && setStatus(followOtherStatus);
+                })
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchData();
     }, [id])
 
     return (

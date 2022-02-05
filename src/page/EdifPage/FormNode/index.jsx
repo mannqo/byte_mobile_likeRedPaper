@@ -21,7 +21,7 @@ export default memo(function FormNode(props) {
             onFinish={(value) => send(value)}
         >
             {
-                type == 'nickname' ?
+                type === 'nickname' ?
                     (
                         <Form.Item
                             name={type}

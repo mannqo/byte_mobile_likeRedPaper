@@ -9,14 +9,19 @@ export default memo(function FollowsList(props) {
     const [followsList, setFollowsList] = useState([]);
     const { userId } = cookie.load('userInfo');
 
-    useEffect(async () => {
-        try {
-            const res = await getFollowsList({ userId });
-            setFollowsList(res.followsList);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFollowsList({ userId });
+                setFollowsList(res.followsList);
+            } catch (err) {
+                console.log(err);
+            }
         }
+
+        fetchData();
     }, [userId])
+
     return (
         <List>
             {

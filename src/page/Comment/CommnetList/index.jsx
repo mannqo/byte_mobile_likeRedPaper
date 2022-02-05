@@ -8,13 +8,16 @@ export default memo(function CommentList() {
     const { userId } = cookie.load('userInfo');
     const [like, setLike] = useState([]);
 
-    useEffect(async () => {
-        try {
-            const res = await getLikeUsersComment({ userId });
-            setLike(res.like);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getLikeUsersComment({ userId });
+                setLike(res.like);
+            } catch (err) {
+                console.log(err);
+            }
         }
+        fetchData();
     }, [userId])
 
     return (

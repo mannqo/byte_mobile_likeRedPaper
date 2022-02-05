@@ -28,14 +28,17 @@ export default memo(function EditPage() {
     const [tipText, settipText] = useState('');
     const [form] = Form.useForm()
 
-    useEffect(async () => {
-        try {
-            const res = await getBaseUserInfo({ userId });
-            const { user } = res;
-            setUser(user);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getBaseUserInfo({ userId });
+                const { user } = res;
+                setUser(user);
+            } catch (err) {
+                console.log(err);
+            }
         }
+        fetchData();
     }, [userId])
 
     const send = async (dataObj) => {

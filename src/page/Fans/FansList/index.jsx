@@ -9,15 +9,20 @@ export default memo(function FanList() {
     const [fansList, setFansList] = useState([]);
     const { userId } = cookie.load('userInfo');
 
-    useEffect(async () => {
-        try {
-            const res = await getFansList({ userId });
-            setFansList(res.fansList);
-        } catch (err) {
-            console.log(err);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFansList({ userId });
+                setFansList(res.fansList);
+            } catch (err) {
+                console.log(err);
+            }
         }
-    }, [userId]) 
-    
+
+        fetchData();
+    }, [userId])
+
     return (
         <List>
             {

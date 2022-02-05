@@ -1,5 +1,5 @@
 import { List, Image, Button } from 'antd-mobile';
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cancelFollow, followOthers, getFansList } from '../../../../services/users';
 import cookie from 'react-cookies';
 import { useHistory } from 'react-router-dom';
@@ -18,7 +18,7 @@ export default function FansItem({ userInfo }) {
     fill: 'solid',
     followStatus: '互相关注'
   }
-  
+
   const [status, setStatus] = useState(initialStatus);
 
   const followOrNot = async () => {
@@ -41,13 +41,22 @@ export default function FansItem({ userInfo }) {
     history.push('/other/page/' + userId);
   }
 
-  useEffect(async () => {
-    const res = await getFansList({ userId });
-    const { fansList } = res;
-    fansList.map(item => {
-      item.userId === id && setStatus(followStatus);
-    })
-  }, [id])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getFansList({ userId });
+        const { fansList } = res;
+        fansList.map(item => {
+          item.userId === id && setStatus(followStatus);
+        })
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+    fetchData();
+  }, [userId, id])
   return (
     <List.Item
       key={userId}

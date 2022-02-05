@@ -4,8 +4,7 @@ import { SearchOutline, AddOutline } from 'antd-mobile-icons';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import TabPage from '../../TabPage';
-import { sleep } from 'antd-mobile/es/utils/sleep';
-import Mock from 'mockjs';
+import { sleep } from 'antd-mobile/es/utils/sleep'; 
 import { Article, sorter } from '../../PostDetail';
 import { getHomePageArticles } from '../../../services/article';
 
