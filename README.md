@@ -1,4 +1,4 @@
-这是一个仿小红书部分功能的移动端项目~~
+这是一个社交分享平台的移动端项目~~
 ### 涉及技术点
 框架搭建：React+TypeScript
 UI组件库：Ant Design Mobile
