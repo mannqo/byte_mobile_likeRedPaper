@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 
 export default function ArticleCard({ article }: { article: Article }) {
     const userInfo = cookie.load('userInfo') as UserFullInfo;
-    if (!userInfo) window.location.replace('/#/login');
+    if (!userInfo) window.location.replace('#/login');
 
     // 格式化
     converter(article);

@@ -70,10 +70,11 @@ export default memo(function FollowsItem(props) {
     return (
         <List.Item>
             <List.Item
+                onClick={style === 'none' ? toPersonalChat : null}
                 key={userId}
                 prefix={
                     <Image
-                        onClick={style === 'none' ? toPersonalChat : toPersonalPage}
+                        onClick={style === 'none' ? null : toPersonalPage}
                         src={avatar}
                         style={{ borderRadius: 20 }}
                         fit='cover'

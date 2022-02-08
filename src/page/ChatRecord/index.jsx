@@ -26,24 +26,28 @@ export default memo(function ChatRecord() {
             await sendMessage({ userId, receiverId: Number(receiverId), message });
             const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
             setChatRecord(res.record);
+            window.scrollTo(0, document.body.scrollHeight); 
             socket.emit('send-message', { userId, receiverId: Number(receiverId), message });   // 发消息
-            socket.on('receive-message', async data => {
-                console.log(data);
-                const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
-                setChatRecord(res.record);
-            });
+
         } catch (err) {
             console.log(err);
         }
     }
 
     useEffect(() => {
+        window.scrollTo(0, document.body.scrollHeight);
         const fetchData = async () => {
             try {
                 const user = await getFullUserInfo({ userId: Number(receiverId) });
                 const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
                 setChatRecord(res.record);
                 setUserInfo(user.user);
+                socket.emit('online', userId);
+                socket.on('receive-message', async data => { 
+                    window.scrollTo(0, document.body.scrollHeight); 
+                    const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
+                    setChatRecord(res.record);
+                });
             } catch (err) {
                 console.log(err);
             }

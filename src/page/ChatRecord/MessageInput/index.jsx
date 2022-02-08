@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Input } from 'antd-mobile'
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
 
-const MessageItem = (props) => { 
+const MessageItem = (props) => {
     const { sendMessage } = props;
     const [value, setValue] = useState('')
     // 提交消息
@@ -12,7 +12,7 @@ const MessageItem = (props) => {
             const { value } = e.target;
             sendMessage(value);
             setValue('');
-            
+
         } catch (err) {
             console.log(err);
         }
@@ -33,11 +33,12 @@ const MessageItem = (props) => {
 export default MessageItem;
 
 const InputWrapper = styled.div`
-    width: 100vw;
+    width: 91vw;
+    padding: 0 10px;
     position: fixed;
     z-index: 9999;
     bottom: 0;
-    border: 10px solid #e0e0e0;
-    border-radius: 20px;
+    border: 10px solid #bf95e3;
+    border-radius: 10px;
     background-color: #fff;
 `
