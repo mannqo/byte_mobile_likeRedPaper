@@ -8,8 +8,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { Review, UserFullInfo } from "..";
 import { likeReview, unlikeReview } from "../../../services/review";
-import cookie from 'react-cookies';
-import { getFullUserInfo } from "../../../services/users";
+import cookie from 'react-cookies'; 
 
 export function ReviewArea({
     reviews,

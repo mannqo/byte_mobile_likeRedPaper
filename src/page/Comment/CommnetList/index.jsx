@@ -10,14 +10,17 @@ export default memo(function CommentList() {
     const [like, setLike] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            const res = await getLikeUsersComment({ userId });
-            setLike(res.like);
-            setLoading(false);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getLikeUsersComment({ userId });
+                setLike(res.like);
+                setLoading(false);
+            } catch (err) {
+                console.log(err);
+            }
         }
+        fetchData();
     }, [userId])
 
     return (

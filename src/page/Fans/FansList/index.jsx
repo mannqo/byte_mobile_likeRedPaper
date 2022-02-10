@@ -13,14 +13,17 @@ export default memo(function FanList() {
     const [fansList, setFansList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            const res = await getFansList({ userId });
-            setFansList(res.fansList);
-            setLoading(false);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFansList({ userId });
+                setFansList(res.fansList);
+                setLoading(false);
+            } catch (err) {
+                console.log(err);
+            }
         }
+        fetchData();
     }, [userId])
 
     return (

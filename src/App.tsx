@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     try {
       if (!cookie.load('userInfo')) {
-        window.location.replace('/#/login');
+        window.location.replace('#/login');
       }
     } catch (err) {
       console.log(err);

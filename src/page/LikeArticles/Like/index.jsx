@@ -1,5 +1,5 @@
 import { List } from 'antd-mobile';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Item from '../Item';
 
 export default memo(function Like(props) {

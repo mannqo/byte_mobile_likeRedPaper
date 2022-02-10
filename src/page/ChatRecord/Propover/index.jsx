@@ -12,7 +12,7 @@ export const PropoverWrapper = (props) => {
         <div className='popover'>
             {
                 chatRecord && chatRecord.map(record => (
-                    record.userId == user.userId ?
+                    record.userId === user.userId ?
                         <PopoverItem
                             key={record._id}
                             avatar={user.avatar}

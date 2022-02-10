@@ -1,8 +1,6 @@
 import { List } from 'antd-mobile';
-import cookie from 'react-cookies';
 import SkeletonItem from '../../../component/SkeletonItem';
 import FansItem from '../../Fans/FansList/FansItem';
-import { UserFullInfo } from '../../PostDetail';
 
 
 export default function UserResult({ userList, loading }: { userList: any[], loading: boolean }) {

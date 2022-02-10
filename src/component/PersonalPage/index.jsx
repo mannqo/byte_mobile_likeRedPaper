@@ -8,19 +8,21 @@ import MyStarArticles from './MyStarArticles'
 import { getFullUserInfo } from '../../services/users'
 
 
-export default memo(function PersonalPage(props) {  
+export default memo(function PersonalPage(props) {
     const { userId } = props;
     const [userInfo, setUserInfo] = useState({});
 
-    useEffect(async () => {
-        try {
-            const res = await getFullUserInfo({ userId });
-            setUserInfo(res.user);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFullUserInfo({ userId });
+                setUserInfo(res.user);
+            } catch (err) {
+                console.log(err);
+            }
         }
-
-    }, [userId])  
+        fetchData();
+    }, [userId])
     return (
         <div>
             <ItemContainer className='ItemContainer'>

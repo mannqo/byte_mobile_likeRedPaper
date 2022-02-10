@@ -28,7 +28,7 @@ export default memo(function EditInfo(props) {
     <div style={{ 'display': 'flex', 'margin': '10px 0' }}>
       <TabBarWrapper>
         <TabBar onChange={getList}>
-          <TabBar.Item key='1' icon={follows && follows.length.toString()} title='关注' badge={Badge.dot} />
+          <TabBar.Item key='1' icon={follows && follows.length.toString()} title='关注' />
           <TabBar.Item key='2' icon={fans && fans.length.toString()} title='粉丝' />
           <TabBar.Item key='3' icon={likedArticles && likedArticles.length.toString()} title='点赞与收藏' />
         </TabBar>

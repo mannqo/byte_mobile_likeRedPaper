@@ -16,17 +16,21 @@ export default memo(function LikeArticle() {
     const [star, setStar] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            const likeRes = await getLikeUsersArticle({ userId });
-            const starRes = await getStarUsersArticle({ userId });
-            setLike(likeRes.like);
-            setStar(starRes.star);
-            setLoading(false);
-        } catch (err) {
-            Toast.show(err.message);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const likeRes = await getLikeUsersArticle({ userId });
+                const starRes = await getStarUsersArticle({ userId });
+                setLike(likeRes.like);
+                setStar(starRes.star);
+                setLoading(false);
+            } catch (err) {
+                Toast.show(err.message);
+            }
         }
+        fetchData();
     }, [userId])
+
     return (
         <div>
             <NavBar onBack={history.goBack} > 获赞与收藏 </NavBar>

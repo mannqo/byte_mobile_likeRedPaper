@@ -7,20 +7,22 @@ import SkeletonItem from '../SkeletonItem';
 
 const MessageList = () => {
     const [chatList, setChatList] = useState([]);
-    const { userId } = cookie.load('userInfo');
 
     // State
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            const res = await getChatList({ userId });
-            setChatList(res.chatList);
-            setLoading(false);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const { userId } = cookie.load('userInfo');
+                const res = await getChatList({ userId });
+                setChatList(res.chatList);
+                setLoading(false);
+            } catch (err) {
+                console.log(err);
+            }
         }
-
+        fetchData();
     }, [])
     return (
         <List>

@@ -13,14 +13,17 @@ export default memo(function FollowsList(props) {
     const [followsList, setFollowsList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            const res = await getFollowsList({ userId });
-            setFollowsList(res.followsList);
-            setLoading(false);
-        } catch (err) {
-            console.log(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getFollowsList({ userId });
+                setFollowsList(res.followsList);
+                setLoading(false);
+            } catch (err) {
+                console.log(err);
+            }
         }
+        fetchData();
     }, [userId])
 
     return (

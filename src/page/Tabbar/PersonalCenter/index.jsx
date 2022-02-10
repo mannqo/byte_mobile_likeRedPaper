@@ -1,4 +1,4 @@
-import { Button, Modal, NavBar, Space, Toast } from 'antd-mobile'
+import { Modal, NavBar, Space, Toast } from 'antd-mobile'
 import React, { memo } from 'react'
 import { UploadOutline, SendOutline } from 'antd-mobile-icons'
 import PersonalPage from '../../../component/PersonalPage'

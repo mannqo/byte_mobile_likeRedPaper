@@ -1,6 +1,6 @@
 import { NavBar } from 'antd-mobile';
 import React, { memo } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PersonalPage from '../../component/PersonalPage';
 
 export default memo(function OtherPage() {
