@@ -86,3 +86,11 @@ export function getHomePageArticles() {
         url: '/article/getHomePage',
     })
 }
+
+export function getHomePageTagArticles(option) {
+    return request({
+        method: 'GET',
+        url: '/article/getHomePageTag',
+        params: option
+    })
+}

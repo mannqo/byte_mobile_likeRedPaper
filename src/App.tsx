@@ -1,4 +1,5 @@
 import './App.css';
+import 'animate.css';
 import { renderRoutes } from 'react-router-config';
 
 import routes from './routes';

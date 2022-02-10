@@ -1,4 +1,4 @@
-import { Button, Dialog, Image, InfiniteScroll, Input, NavBar, Popup, PullToRefresh, Skeleton, Space, Swiper, Tag, TextArea, Toast } from "antd-mobile";
+import { Button, Dialog, Image, InfiniteScroll, Input, Loading, NavBar, Popup, PullToRefresh, Skeleton, Space, Swiper, Tag, TextArea, Toast } from "antd-mobile";
 import {
     SendOutline,
     FrownOutline,
@@ -18,10 +18,12 @@ import { ReviewArea } from "./component/review";
 import { sleep } from 'antd-mobile/es/utils/sleep';
 import { getArticleById, likeArticle, getLikedArticles, starArticle, unlikeArticle, unstarArticle, getStaredArticles } from "../../services/article";
 import { cancelFollow, followOthers, getBaseUserInfo, getFollowsList } from "../../services/users";
-import { getLikedReviews, postReview } from "../../services/review";
+import { getLikedReviews, getReviewByArticle, postReview } from "../../services/review";
 import { ExecuteError } from "../../services/axios";
 import cookie from 'react-cookies';
 import ImagePlaceholder from "../../component/ImagePlaceholder";
+import ImageFallback from "../../component/ImageFallback";
+import Share from "../../component/Share";
 
 type UserInfo = {
     avatar: string,
@@ -92,6 +94,7 @@ export default function PostDetail() {
         articleId: 0
     });
     let [reviews, setReviews] = useState<Review[]>([]);
+    let [reviewTimes, setReviewTimes] = useState(0);
     let [authorInfo, setAuthorInfo] = useState<UserInfo>({
         avatar: "",
         nickname: "",
@@ -102,6 +105,7 @@ export default function PostDetail() {
     let [stared, setStared] = useState(false);
     let [likedReviews, setLikedReviews] = useState<string[]>([]);
     let [popupVisible, setPopupVisible] = useState(false);
+    let [shareVisible, setShareVisible] = useState(false);
     let [showPostBtn, setShowPostBtn] = useState(false);
     let [inputValue, setInputValue] = useState('');
     let [hasMoreReviews, setHasMoreReviews] = useState(true);
@@ -121,10 +125,9 @@ export default function PostDetail() {
     // 刷新页面
     const refresh = async () => {
         try {
-            const json = await getArticleById({ articleId });
-            const article = json.article as Article;
-            const reviewJson = json.article.reviewList as Review[];
-            for (const reviewItem of reviewJson) {
+            let article = (await getArticleById({ articleId })).article as Article;
+            const reviewList = (await getReviewByArticle({ articleId, pages: 0 })).reviews as Review[];
+            for (const reviewItem of reviewList) {
                 await fillReviewAuthorInfo(reviewItem);
             }
             const authorJson = (await getBaseUserInfo({ userId: article.authorId })).user;
@@ -133,17 +136,8 @@ export default function PostDetail() {
             const likedArticles = (await getLikedArticles({ userId: userInfo.userId })).likedArticles.map((i: any) => i._id);;
             const staredArticles = (await getStaredArticles({ userId: userInfo.userId })).staredArticles.map((i: any) => i._id);;
             const reviews = (await getLikedReviews({ userId: userInfo.userId })).likedReviews.map((i: any) => i._id);;
-            // 排序
-            sorter(reviewJson);
-            reviewJson.forEach(function f(item) {
-                sorter(item.reviewList);
-            })
             // 格式化
-            converter(article);
-            reviewJson.forEach(function f(item) {
-                converter(item);
-                item.reviewList.forEach(f);
-            })
+            article = converter(article) as Article;
             // 更新state
             setLiked(likedArticles.includes(article._id));
             if (likedArticles.includes(article._id) && typeof article.likes === 'number') {
@@ -154,29 +148,55 @@ export default function PostDetail() {
                 article.stars -= 1;
             }
             setArticle(article);
-            setReviews(reviewJson);
+            setReviews(reviewList);
             setAuthorInfo(authorJson);
             setFollowed(followsList.includes(authorJson.userId));
             setLikedReviews(reviews);
             setSkeletonLoading(false);
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);
+            if (reviewList.length >= 10) {
+                setReviewTimes(1);
+            } else {
+                setReviewTimes(0);
+            }
         } catch (err) {
             Toast.show((err as ExecuteError).message);
         }
     }
 
     // 加载更多评论
-    const loadMoreReviews = async () => {
-        // Toast.show('正在加载更多评论...');
-        await sleep(2000);
-        // Toast.show('加载完成');
-        setHasMoreReviews(false);
+    const loadMoreReviews = async (reset = false) => {
+        try {
+            const reviewList = (await getReviewByArticle({ articleId, pages: reset ? 0 : reviewTimes })).reviews as Review[];
+            if (reviewList.length < 10) {
+                setHasMoreReviews(false);
+            } else {
+                setReviewTimes(reset ? 1 : reviewTimes + 1);
+            }
+            for (const reviewItem of reviewList) {
+                await fillReviewAuthorInfo(reviewItem);
+            }
+            for (let review of reviews) {
+                let findRes = reviewList.find(item => item._id === review._id);
+                if (!findRes) {
+                    reviewList.push(review);
+                }
+            }
+            // 排序
+            sorter(reviewList);
+            reviewList.forEach(function f(item) {
+                sorter(item.reviewList);
+            })
+            setReviews(reviewList);
+        } catch (err) {
+            Toast.show((err as ExecuteError).message);
+        }
     }
 
     // 分享按钮
     const shareBtn = () => {
-        Toast.show('分享');
+        setShareVisible(true);
     }
 
     // 关注文章作者的按钮
@@ -273,7 +293,7 @@ export default function PostDetail() {
             });
             setInputValue('');
             Toast.show('发布成功');
-            refresh();
+            loadMoreReviews(true);
         } catch (err) {
             Toast.show((err as ExecuteError).message);
         }
@@ -302,6 +322,7 @@ export default function PostDetail() {
                 src={url}
                 style={{ width: '100%' }}
                 lazy
+                fallback={<ImageFallback />}
                 placeholder={<ImagePlaceholder />}
             ></Image>
         </Swiper.Item>
@@ -388,7 +409,7 @@ export default function PostDetail() {
                         </Space>
                         {/* 评论展示区域 */}
                         <ReviewArea reviews={reviews} likedReviews={likedReviews} enterUserHomePage={gotoUserPage} reviewCallback={reviewBtn} />
-                        <InfiniteScroll hasMore={hasMoreReviews} loadMore={() => loadMoreReviews()} />
+                        {skeletonLoading ? <Loading /> : <InfiniteScroll hasMore={hasMoreReviews} loadMore={() => loadMoreReviews()} />}
                     </article>
                 </PullToRefresh>
             </div>
@@ -486,6 +507,8 @@ export default function PostDetail() {
                     </Space>
                 </PopupContainer>
             </Popup>
+            {/* 分享 */}
+            <Share visible={shareVisible} setVisible={setShareVisible} />
         </Container>
     );
 }
@@ -505,6 +528,7 @@ const parseNum = (num: number | string) => {
 const parseDate = (dateStr: string) => {
     const now = new Date();
     const date = new Date(dateStr);
+    if (date.toString() === 'Invalid Date') return dateStr;
     if (now.getFullYear() === date.getFullYear()) {
         // 今年
         if (date.getMonth() === now.getMonth() && date.getDate() === now.getDate()) {
@@ -539,18 +563,20 @@ const parseDate = (dateStr: string) => {
 
 // Num和Date格式转换器
 export const converter = (obj: { likes?: number | string, stars?: number | string, reviews?: number | string | Array<any>, postDate?: string }) => {
+    let copy = { ...obj };
     if (obj.likes !== undefined) {
-        obj.likes = parseNum(obj.likes);
+        copy.likes = parseNum(obj.likes);
     }
     if (obj.stars !== undefined) {
-        obj.stars = parseNum(obj.stars);
+        copy.stars = parseNum(obj.stars);
     }
     if (obj.reviews !== undefined && !(obj.reviews instanceof Array)) {
-        obj.reviews = parseNum(obj.reviews);
+        copy.reviews = parseNum(obj.reviews);
     }
     if (obj.postDate !== undefined) {
-        obj.postDate = parseDate(obj.postDate);
+        copy.postDate = parseDate(obj.postDate);
     }
+    return copy;
 }
 
 // 根据likes数和postDate排序，likes数优先，其次是postDate
@@ -570,6 +596,9 @@ const fillReviewAuthorInfo = async (review: Review) => {
     try {
         for (const reviewItem of review.reviewList) {
             await fillReviewAuthorInfo(reviewItem);
+        }
+        if (review.authorInfo) {
+            return;
         }
         review.authorInfo = (await getBaseUserInfo({ userId: review.authorId })).user as UserInfo;
         review.authorInfo.userId = review.authorId;

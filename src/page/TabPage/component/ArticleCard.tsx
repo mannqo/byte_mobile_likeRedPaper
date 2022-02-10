@@ -9,6 +9,7 @@ import { getLikedArticles, likeArticle, unlikeArticle } from "../../../services/
 import cookie from 'react-cookies';
 import { useHistory } from "react-router-dom";
 import ImagePlaceholder from "../../../component/ImagePlaceholder";
+import ImageFallback from "../../../component/ImageFallback";
 
 export default function ArticleCard({ article }: { article: Article }) {
     const userInfo = cookie.load('userInfo') as UserFullInfo;
@@ -73,12 +74,13 @@ export default function ArticleCard({ article }: { article: Article }) {
     }
 
     return <Container>
-        <div className="card">
+        <div className="card animate__animated animate__fadeInUp">
             {article.images.length > 0 ?
                 <Image
                     src={article.images[0]}
                     className="head-img"
                     placeholder={<ImagePlaceholder />}
+                    fallback={<ImageFallback />}
                     onClick={turnToPostDetail}
                     style={{ cursor: 'pointer' }}
                 />

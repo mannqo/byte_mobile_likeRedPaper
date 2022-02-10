@@ -13,6 +13,7 @@ export default memo(function MessageItem(props) {
     }
     return (
         <List.Item
+            className='animate__animated animate__fadeIn'
             prefix={
                 <Image
                     src={avatar}
