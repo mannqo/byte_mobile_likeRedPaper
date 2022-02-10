@@ -22,6 +22,7 @@ export default function ChatRecord() {
     const [loading, setLoading] = useState(false);
     const [skeletonVisible, setSkeletonVisible] = useState(true);
     const [page, setPage] = useState(1);
+    const [height, setHeight] = useState(document.body.clientHeight);
     const { receiverId } = useParams();
 
     const sendMessageto = async (message) => {
@@ -39,6 +40,8 @@ export default function ChatRecord() {
 
     const handleScroll = async () => {
         const scrollTop = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || 0;
+        const preHeight = document.body.clientHeight;
+        if (preHeight > height) setHeight(preHeight - height);
         if (!scrollTop) {
             if (!reachTop) {
                 setPage(page + 1);
@@ -54,6 +57,8 @@ export default function ChatRecord() {
                 }
                 if (newRecord.length) {
                     setChatRecord([...newRecord, ...chatRecord])
+                    window.scrollTo(0, preHeight)
+                    page === 1 ? window.scrollTo(0, preHeight - 100) : window.scrollTo(0, height - 100);
                 }
                 setVisible(true);
             }
@@ -70,6 +75,7 @@ export default function ChatRecord() {
                 setUserInfo(user.user);
                 setVisible(true);
                 setSkeletonVisible(false);
+                page === 1 && window.scrollTo(0, document.body.scrollHeight);
                 socket.emit('online', userId);
                 socket.on('receive-message', async () => {
                     window.scrollTo(0, document.body.scrollHeight);
@@ -91,14 +97,13 @@ export default function ChatRecord() {
     }, [userId, receiverId])
 
     useEffect(() => {
-        Number(page) === 1 && window.scrollTo(0, document.body.scrollHeight);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [chatRecord])
 
     useEffect(() => {
         return () => { reachTop = false }
-    },[])
+    }, [])
 
     return (
         <div>
