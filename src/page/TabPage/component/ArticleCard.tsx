@@ -74,7 +74,7 @@ export default function ArticleCard({ article }: { article: Article }) {
     }
 
     return <Container>
-        <div className="card">
+        <div className="card animate__animated animate__fadeInUp">
             {article.images.length > 0 ?
                 <Image
                     src={article.images[0]}

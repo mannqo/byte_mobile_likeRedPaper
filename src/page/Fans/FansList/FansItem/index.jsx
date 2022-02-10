@@ -59,6 +59,7 @@ export default function FansItem({ userInfo }) {
   }, [userId, id])
   return (
     <List.Item
+      className='animate__animated animate__fadeIn'
       key={userId}
       prefix={
         <Image

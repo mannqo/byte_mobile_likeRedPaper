@@ -9,7 +9,7 @@ export default memo(function Like(props) {
         <List>
             {
                 like.map((info, idx) => (
-                    <Item key={idx} type='赞' info={info} />
+                    <Item className='animate__animated animate__fadeIn' key={idx} type='赞' info={info} />
                 ))
             }
         </List>

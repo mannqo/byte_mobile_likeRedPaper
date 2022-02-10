@@ -7,7 +7,7 @@ export default memo(function Star(props) {
     return (
         <List>
             {star.map((info, idx) => (
-                <Item key={idx} type='收藏' info={info} />
+                <Item className='animate__animated animate__fadeIn' key={idx} type='收藏' info={info} />
             ))}
         </List>
     );
