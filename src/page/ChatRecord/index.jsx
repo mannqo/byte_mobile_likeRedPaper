@@ -62,9 +62,11 @@ export default memo(function ChatRecord() {
                 socket.emit('online', userId);
                 socket.on('receive-message', async () => {
                     window.scrollTo(0, document.body.scrollHeight);
+                    setVisible(false)
                     const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page })
                     const { newRecord } = res;
                     setChatRecord(newRecord);
+                    setVisible(true);
                 });
             } catch (err) {
                 console.log(err);
