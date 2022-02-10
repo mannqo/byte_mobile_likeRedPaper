@@ -15,6 +15,7 @@ import LikeArticle from "../page/LikeArticles";
 import OtherPage from "../page/OtherPage"; 
 import WriteArticle from "../page/WriteArticle";
 import Comment from "../page/Comment";
+import Register from "../page/Register";
 
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
         path: "/login",
         exact: true,
         component: Login
+    },
+    {
+        path: "/register",
+        exact: true,
+        component: Register,
     },
     {
         path: "/tabbar",

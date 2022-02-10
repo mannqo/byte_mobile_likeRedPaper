@@ -1,9 +1,8 @@
-import React, { memo } from 'react';
-import { Form, Input, Button, Toast } from 'antd-mobile';
+import React, { memo, useState } from 'react';
+import { Form, Input, Button, Toast, SpinLoading } from 'antd-mobile';
 import styled from 'styled-components';
-import { login } from '../../services/login';
+import { login, register } from '../../services/login';
 import { useHistory } from 'react-router-dom';
-import { getFullUserInfo } from '../../services/users';
 import cookie from 'react-cookies';
 
 
@@ -11,42 +10,41 @@ import cookie from 'react-cookies';
 
 export default memo(function Login() {
     const history = useHistory();
+    const [loading, setLoading] = useState('none');
     if (cookie.load('userInfo')) history.push('/tabbar');
 
-    const onFinish = async (user) => {
-        try {
-            const res = await login(user);
-            console.log(res);
+    const onFinish = async (user) => { 
+        setLoading('true');
+        const { username, password, affirmPassword } = user;
+        if (password !== affirmPassword) {
             Toast.show({
-                content: res.msg,
-                afterClose: async () => {
-                    const userInfo = await getFullUserInfo({ userId: res.userId });
-                    cookie.save('userInfo', userInfo.user);
-                    history.push('/tabbar');
-                },
+                content: '两次密码输入不一致'
             })
-        } catch (err) {
-            Toast.show(err.message);
-            if (err.status === 406) {
-                const userInfo = await getFullUserInfo({ userId: err.res.userId });
-                cookie.save('userInfo', userInfo.user);
-                history.push('/tabbar');
+        } else {
+            try {
+                const res = await register({ username, password });
+                setLoading('none')
+                Toast.show({
+                    content: res.msg,
+                    afterClose: async () => { 
+                        history.replace('/#/login');
+                    },
+                })
+            } catch (err) {
+                Toast.show(err.message);
             }
         }
     }
 
-    const toRegister = () => {
-        history.replace('/register');
-    }
     return (
         <LoginWrapper>
             <h3 className='title'>欢迎来到小日常~</h3>
+            <SpinLoading className='loading' color='primary' style={{ display: loading }} />
             <Form
                 className='form'
                 onFinish={onFinish}
                 footer={
                     <>
-                        <p className='register' onClick={toRegister}>未注册？点击这里注册账号</p>
                         <Button block type='submit' color='primary' size='large'>
                             提交
                         </Button>
@@ -67,6 +65,13 @@ export default memo(function Login() {
                 >
                     <Input placeholder='请输入密码' value='' clearable type='password' />
                 </Form.Item>
+                <Form.Item
+                    name='affirmPassword'
+                    label='确认密码'
+                    rules={[{ required: true, message: '密码不能为空' }]}
+                >
+                    <Input placeholder='请输入密码' value='' clearable type='password' />
+                </Form.Item>
             </Form>
         </LoginWrapper>
     );
@@ -78,6 +83,11 @@ const LoginWrapper = styled.div`
         top: 100px;
         font-size: 40px;
         text-align: center;
+    }
+    .loading {
+        position: absolute;
+        top: 42%;
+        left: 46%;
     }
     .adm-form-footer {
         padding-top: 0;
