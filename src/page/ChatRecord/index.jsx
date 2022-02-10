@@ -1,4 +1,4 @@
-import { NavBar } from 'antd-mobile'
+import { NavBar, Toast } from 'antd-mobile'
 import React, { memo, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getChattingRecord } from '../../services/chat'
@@ -12,41 +12,59 @@ import { sendMessage } from '../../services/chat';
 import io from 'socket.io-client';
 const socket = io.connect('ws://localhost:8080/chat');
 
-
+let page = 1, flag = 1;
 export default memo(function ChatRecord() {
-    window.scrollTo(0, document.body.scrollHeight);
     const { userId } = cookie.load('userInfo');
     const history = useHistory();
     const [userInfo, setUserInfo] = useState([]);
-    const [chatRecord, setChatRecord] = useState();
+    const [chatRecord, setChatRecord] = useState([]);
+    const [visible, setVisible] = useState(true);
     const { receiverId } = useParams();
 
     const sendMessageto = async (message) => {
         try {
-            await sendMessage({ userId, receiverId: Number(receiverId), message });
-            const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
-            setChatRecord(res.record);
-            window.scrollTo(0, document.body.scrollHeight); 
+            const res = await sendMessage({ userId, receiverId: Number(receiverId), message });
+            const { newMessage } = res;
+            const newRecord = [...chatRecord, newMessage];
+            setChatRecord(newRecord);
+            window.scrollTo(0, document.body.scrollHeight);
             socket.emit('send-message', { userId, receiverId: Number(receiverId), message });   // 发消息
-
         } catch (err) {
             console.log(err);
         }
     }
 
+    const handleScroll = async () => {
+        const scrollTop = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || 0;
+        if (!scrollTop) {
+            if (flag) {
+                page++;
+                setVisible(false);
+                const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page });
+                const { newRecord } = res;
+                if (newRecord.length < 15) flag = 0;
+                if (newRecord.length) {
+                    setChatRecord([...newRecord, ...chatRecord])
+                }
+                setVisible(true);
+            }
+        }
+    }
+
     useEffect(() => {
-        window.scrollTo(0, document.body.scrollHeight);
         const fetchData = async () => {
             try {
                 const user = await getFullUserInfo({ userId: Number(receiverId) });
-                const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
-                setChatRecord(res.record);
+                const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page })
+                const { newRecord } = res;
+                setChatRecord(newRecord);
                 setUserInfo(user.user);
                 socket.emit('online', userId);
-                socket.on('receive-message', async data => { 
-                    window.scrollTo(0, document.body.scrollHeight); 
-                    const res = await getChattingRecord({ userId, receiverId: Number(receiverId) })
-                    setChatRecord(res.record);
+                socket.on('receive-message', async () => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                    const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page })
+                    const { newRecord } = res;
+                    setChatRecord(newRecord);
                 });
             } catch (err) {
                 console.log(err);
@@ -54,15 +72,20 @@ export default memo(function ChatRecord() {
         }
         fetchData();
     }, [userId, receiverId])
+    useEffect(() => {
+        Number(page) === 1 && window.scrollTo(0, document.body.scrollHeight);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [chatRecord])
 
 
-    const back = () => {
-        history.go(-1);
-    }
     return (
-        <div>
-            <NavBar onBack={back} className='title'>{userInfo && userInfo.nickname}</NavBar>
-            <PropoverWrapper userInfo={userInfo} chatRecord={chatRecord}></PropoverWrapper>
+        <div onScrollCapture={handleScroll}>
+            <div className='titleWrap'>
+                <NavBar onBack={history.goBack} className='title'> {userInfo && userInfo.nickname} </NavBar>
+            </div>
+            <PropoverWrapper userInfo={userInfo} chatRecord={chatRecord} visible={visible} />
+
             <MessageInput sendMessage={sendMessageto}></MessageInput>
         </div>
     )

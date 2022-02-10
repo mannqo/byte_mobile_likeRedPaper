@@ -9,9 +9,6 @@
     padding: 10px;
     padding-bottom: 0;
 }
-.dialog:first-child {
-    padding-top: 60px;
-}
 .dialog:last-child {
     padding-bottom: 60px;
 }

@@ -6,7 +6,7 @@ import { getLikeUsersComment } from '../../../services/notice';
 import CommentItem from './CommentItem';
 
 export default memo(function CommentList() {
-    const { userId } = cookie.load('userInfo');
+    const { userId } = cookie.load('userInfo'); 
     const [like, setLike] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,7 @@ export default memo(function CommentList() {
             }
         }
         fetchData();
-    }, [userId])
+    }, [userId]) 
 
     return (
         <List>
