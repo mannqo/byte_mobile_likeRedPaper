@@ -1,4 +1,4 @@
-import { Avatar, Skeleton, Space } from "antd-mobile";
+import { Skeleton, Space } from "antd-mobile";
 import { HeartOutline } from "antd-mobile-icons";
 import styled from "styled-components";
 

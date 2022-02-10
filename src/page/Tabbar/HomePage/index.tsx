@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { NavBar, Space, Toast, Tabs, PullToRefresh, Skeleton, Loading } from 'antd-mobile';
+import { NavBar, Space, Toast, Tabs, PullToRefresh, Loading } from 'antd-mobile';
 import { SearchOutline, AddOutline } from 'antd-mobile-icons';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';

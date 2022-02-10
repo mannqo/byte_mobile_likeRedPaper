@@ -2,8 +2,8 @@ import { List, Image } from 'antd-mobile';
 import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 
-export default memo(function CommentItem(props) {
-    const { articleInfo, reviews, userInfo } = props.info;
+export default memo(function CommentItem(props) {  
+    const { articleInfo, reviews, userInfo } = props.info; 
     const { articleId, images } = articleInfo;
     const { parentReviewId, postDate } = reviews;
     const { nickname, avatar } = userInfo;
