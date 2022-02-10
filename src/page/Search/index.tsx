@@ -20,6 +20,7 @@ export default function Search() {
     const [searched, setSearched] = useState(false);
     const [articles, setArticles] = useState<Article[]>([]);
     const [users, setUsers] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     // Effect
     useEffect(() => {
@@ -34,10 +35,14 @@ export default function Search() {
     // 搜索按钮
     const searchBtn = async () => {
         if (searchText !== "") {
+            if (!keyWord) {
+                history.push('/search/' + searchText);
+            }
             try {
+                setSearched(true);
                 setArticles((await searchByArticle({ keyWord: searchText })).articles);
                 setUsers((await searchByUser({ keyWord: searchText })).users);
-                setSearched(true);
+                setLoading(false);
             } catch (err) {
                 Toast.show((err as ExecuteError).message);
             }
@@ -74,10 +79,10 @@ export default function Search() {
                     <PullToRefresh onRefresh={refresh}>
                         <Tabs defaultActiveKey='1'>
                             <Tabs.Tab title='文章' key='1'>
-                                <ArticleResult articles={articles} />
+                                <ArticleResult loading={loading} articles={articles} />
                             </Tabs.Tab>
                             <Tabs.Tab title='用户' key='2'>
-                                <UserResult userList={users} />
+                                <UserResult loading={loading} userList={users} />
                             </Tabs.Tab>
                         </Tabs>
                     </PullToRefresh> : undefined}

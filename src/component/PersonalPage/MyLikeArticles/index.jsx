@@ -5,14 +5,16 @@ import cookie from 'react-cookies'
 
 export default memo(function MyLikeArticles(props) {
     const [likeArticles, setLikeArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
     const { userId } = props;
 
     useEffect(async () => {
         const res = await getLikedArticles({ userId });
         const articles = res.likedArticles;
         setLikeArticles(articles)
+        setLoading(false);
     }, [userId])
     return (
-        <TabPage articles={likeArticles} />
+        <TabPage loading={loading} articles={likeArticles} />
     );
 });

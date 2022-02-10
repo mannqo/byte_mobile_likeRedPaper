@@ -5,13 +5,15 @@ import { getStaredArticles } from '../../../services/article';
 
 export default memo(function MyStarArticle(props) {
   const [starArticles, setStarArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { userId } = props;
   useEffect(async () => {
     const res = await getStaredArticles({ userId });
     const articles = res.staredArticles;
     setStarArticles(articles)
+    setLoading(false);
   }, [userId])
   return (
-    <TabPage articles={starArticles} />
+    <TabPage loading={loading} articles={starArticles} />
   );
 });

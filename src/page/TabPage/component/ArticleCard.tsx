@@ -8,6 +8,7 @@ import { ExecuteError } from "../../../services/axios";
 import { getLikedArticles, likeArticle, unlikeArticle } from "../../../services/article";
 import cookie from 'react-cookies';
 import { useHistory } from "react-router-dom";
+import ImagePlaceholder from "../../../component/ImagePlaceholder";
 
 export default function ArticleCard({ article }: { article: Article }) {
     const userInfo = cookie.load('userInfo') as UserFullInfo;
@@ -77,6 +78,7 @@ export default function ArticleCard({ article }: { article: Article }) {
                 <Image
                     src={article.images[0]}
                     className="head-img"
+                    placeholder={<ImagePlaceholder />}
                     onClick={turnToPostDetail}
                     style={{ cursor: 'pointer' }}
                 />

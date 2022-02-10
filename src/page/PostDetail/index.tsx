@@ -1,4 +1,4 @@
-import { Button, Dialog, InfiniteScroll, Input, NavBar, Popup, PullToRefresh, Space, Swiper, Tag, TextArea, Toast } from "antd-mobile";
+import { Button, Dialog, Image, InfiniteScroll, Input, NavBar, Popup, PullToRefresh, Skeleton, Space, Swiper, Tag, TextArea, Toast } from "antd-mobile";
 import {
     SendOutline,
     FrownOutline,
@@ -21,6 +21,7 @@ import { cancelFollow, followOthers, getBaseUserInfo, getFollowsList } from "../
 import { getLikedReviews, postReview } from "../../services/review";
 import { ExecuteError } from "../../services/axios";
 import cookie from 'react-cookies';
+import ImagePlaceholder from "../../component/ImagePlaceholder";
 
 type UserInfo = {
     avatar: string,
@@ -104,6 +105,7 @@ export default function PostDetail() {
     let [showPostBtn, setShowPostBtn] = useState(false);
     let [inputValue, setInputValue] = useState('');
     let [hasMoreReviews, setHasMoreReviews] = useState(true);
+    let [skeletonLoading, setSkeletonLoading] = useState(true);
     // 评论发布相关
     let [inputPlaceHolder, setInputPlaceHolder] = useState('喜欢就给个评论支持一下~');
     type ReviewTo = { userId: number, parentReviewId?: number };
@@ -156,6 +158,7 @@ export default function PostDetail() {
             setAuthorInfo(authorJson);
             setFollowed(followsList.includes(authorJson.userId));
             setLikedReviews(reviews);
+            setSkeletonLoading(false);
             // 还原是否有更多评论的状态
             setHasMoreReviews(true);
         } catch (err) {
@@ -295,7 +298,12 @@ export default function PostDetail() {
     // 轮播图Items
     const swiperItems = article.images.map((url, idx) =>
         <Swiper.Item key={idx}>
-            <img src={url} style={{ width: '100%' }}></img>
+            <Image
+                src={url}
+                style={{ width: '100%' }}
+                lazy
+                placeholder={<ImagePlaceholder />}
+            ></Image>
         </Swiper.Item>
     )
 
@@ -337,6 +345,11 @@ export default function PostDetail() {
                     {swiperItems.length > 0 ? <Swiper rubberband={false} style={{ '--track-padding': ' 0 0 12px' }}>{swiperItems}</Swiper> : undefined}
                     {/* 文章主体（包括评论） */}
                     <article>
+                        {/* 骨架屏 */}
+                        {skeletonLoading ? <>
+                            <Skeleton.Title animated />
+                            <Skeleton.Paragraph animated />
+                        </> : undefined}
                         {/* 文章详情 */}
                         <h3>{article.title}</h3>
                         <div>{article.content}</div>
@@ -634,6 +647,7 @@ const Container = styled.div`
 
     input[disabled]{
         cursor: text;
+        z-index: -1;
     }
 
     .review-space>:last-child{
