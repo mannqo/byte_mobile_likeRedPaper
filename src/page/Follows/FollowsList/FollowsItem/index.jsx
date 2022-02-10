@@ -70,6 +70,7 @@ export default memo(function FollowsItem(props) {
     return (
         <List.Item>
             <List.Item
+                className='animate__animated animate__fadeIn'
                 onClick={style === 'none' ? toPersonalChat : null}
                 key={userId}
                 prefix={

@@ -17,6 +17,7 @@ export default memo(function CommentItem(props) {
     }
     return (
         <List.Item
+            className='animate__animated animate__fadeIn'
             onClick={toArticleDetail}
             key={postDate}
             prefix={

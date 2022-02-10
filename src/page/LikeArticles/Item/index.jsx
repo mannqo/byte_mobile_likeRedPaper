@@ -13,6 +13,7 @@ export default memo(function Item(props) {
     }
     return (
         <List.Item
+            className='animate__animated animate__fadeIn'
             onClick={toArticleDetail}
             key={userInfo.userId}
             prefix={

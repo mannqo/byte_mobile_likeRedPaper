@@ -107,7 +107,7 @@ export function ReviewItem({
     return <ReviewItemContainer>
         <Space
             style={subReview ? subReviewStyle : {}}
-            className="review-item"
+            className="review-item animate__animated animate__fadeInUp"
             block
             align="start"
         >

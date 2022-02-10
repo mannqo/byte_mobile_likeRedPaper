@@ -1,10 +1,11 @@
 import { Modal, NavBar, Space, Toast } from 'antd-mobile'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { UploadOutline, SendOutline } from 'antd-mobile-icons'
 import PersonalPage from '../../../component/PersonalPage'
 import cookie from 'react-cookies';
 import { logout } from '../../../services/login';
 import { useHistory } from 'react-router-dom';
+import Share from '../../../component/Share';
 
 export default memo(function PersonalCenter() {
     const history = useHistory();
@@ -31,10 +32,11 @@ export default memo(function PersonalCenter() {
             },
         })
     }
+    const [shareVisible, setShareVisible] = useState(false);
     const right = (
         <div style={{ fontSize: 20 }}>
             <Space >
-                <SendOutline />
+                <SendOutline onClick={() => setShareVisible(true)} />
             </Space>
         </div>
     )
@@ -49,6 +51,7 @@ export default memo(function PersonalCenter() {
         <div>
             <NavBar right={right} left={left} backArrow={false}></NavBar>
             <PersonalPage userId={userId} />
+            <Share visible={shareVisible} setVisible={setShareVisible} />
         </div>
     )
 }) 
