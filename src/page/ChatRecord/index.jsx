@@ -1,4 +1,4 @@
-import { NavBar, Toast } from 'antd-mobile'
+import { NavBar, Space, SpinLoading, Toast } from 'antd-mobile'
 import React, { memo, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getChattingRecord } from '../../services/chat'
@@ -12,13 +12,16 @@ import { sendMessage } from '../../services/chat';
 import io from 'socket.io-client';
 const socket = io.connect('ws://localhost:8080/chat');
 
-let page = 1, flag = 1;
-export default memo(function ChatRecord() {
+let reachTop = false;
+export default function ChatRecord() {
     const { userId } = cookie.load('userInfo');
     const history = useHistory();
     const [userInfo, setUserInfo] = useState([]);
     const [chatRecord, setChatRecord] = useState([]);
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [skeletonVisible, setSkeletonVisible] = useState(true);
+    const [page, setPage] = useState(1);
     const { receiverId } = useParams();
 
     const sendMessageto = async (message) => {
@@ -37,12 +40,18 @@ export default memo(function ChatRecord() {
     const handleScroll = async () => {
         const scrollTop = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || 0;
         if (!scrollTop) {
-            if (flag) {
-                page++;
+            if (!reachTop) {
+                setPage(page + 1);
+                setLoading(true);
                 setVisible(false);
-                const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page });
+                setVisible(true);
+                const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page: page + 1 });
+                setLoading(false);
+                setVisible(false);
                 const { newRecord } = res;
-                if (newRecord.length < 15) flag = 0;
+                if (newRecord.length < 15) {
+                    reachTop = true;
+                }
                 if (newRecord.length) {
                     setChatRecord([...newRecord, ...chatRecord])
                 }
@@ -59,11 +68,17 @@ export default memo(function ChatRecord() {
                 const { newRecord } = res;
                 setChatRecord(newRecord);
                 setUserInfo(user.user);
+                setVisible(true);
+                setSkeletonVisible(false);
                 socket.emit('online', userId);
                 socket.on('receive-message', async () => {
                     window.scrollTo(0, document.body.scrollHeight);
-                    setVisible(false)
+                    setLoading(true);
+                    setVisible(false);
+                    setVisible(true);
                     const res = await getChattingRecord({ userId, receiverId: Number(receiverId), page })
+                    setLoading(false);
+                    setVisible(false)
                     const { newRecord } = res;
                     setChatRecord(newRecord);
                     setVisible(true);
@@ -74,21 +89,26 @@ export default memo(function ChatRecord() {
         }
         fetchData();
     }, [userId, receiverId])
+
     useEffect(() => {
         Number(page) === 1 && window.scrollTo(0, document.body.scrollHeight);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [chatRecord])
 
+    useEffect(() => {
+        return () => { reachTop = false }
+    },[])
 
     return (
-        <div onScrollCapture={handleScroll}>
+        <div>
             <div className='titleWrap'>
                 <NavBar onBack={history.goBack} className='title'> {userInfo && userInfo.nickname} </NavBar>
             </div>
-            <PropoverWrapper userInfo={userInfo} chatRecord={chatRecord} visible={visible} />
+            {(skeletonVisible || !loading) ? undefined : <Space block justify='center'><SpinLoading color="primary" /></Space>}
+            <PropoverWrapper userInfo={userInfo} chatRecord={chatRecord} visible={visible} skeletonVisible={skeletonVisible} />
 
             <MessageInput sendMessage={sendMessageto}></MessageInput>
         </div>
     )
-})
+}

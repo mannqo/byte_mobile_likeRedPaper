@@ -1,6 +1,6 @@
 import { Button, Dialog, Input, NavBar, Space, Tag, TextArea, Toast } from "antd-mobile";
 import ImageUploader, { ImageUploadItem } from "antd-mobile/es/components/image-uploader";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { revertUploadImage, uploadImage } from "../../services/upload";
@@ -8,11 +8,15 @@ import { UserFullInfo } from "../PostDetail";
 import cookie from 'react-cookies';
 import { postArticle } from "../../services/article";
 import { ExecuteError } from "../../services/axios";
+import { DialogShowRef } from "antd-mobile/es/components/dialog";
 
 export default function WriteArticle() {
     const history = useHistory();
     const userInfo = cookie.load('userInfo') as UserFullInfo;
     if (!userInfo) history.push('/login');
+
+    // Ref
+    const handler = useRef<DialogShowRef>();
 
     // State
     const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
@@ -61,20 +65,43 @@ export default function WriteArticle() {
 
     // 添加Tag
     const addTagBtn = () => {
-        Dialog.confirm({
-            content: <div>
-                <div><Input
-                    placeholder="请输入要添加的Tag"
-                    onChange={text => tagText = text}
-                /></div>
-            </div>
-        }).then(confirmed => {
+        const afterClose = (confirmed: boolean) => {
             if (confirmed) {
                 let arr = [...tags];
                 arr.push(tagText);
                 setTags(arr);
             }
             tagText = "";
+        }
+        handler.current = Dialog.show({
+            content: <div>
+                <div><Input
+                    placeholder="请输入要添加的Tag"
+                    onEnterPress={() => {
+                        handler.current?.close();
+                        afterClose(true);
+                    }}
+                    onChange={text => tagText = text}
+                /></div>
+            </div>,
+            actions: [[
+                {
+                    key: 'cancel',
+                    text: '取消',
+                    onClick: () => {
+                        handler.current?.close();
+                        afterClose(false);
+                    },
+                },
+                {
+                    key: 'close',
+                    text: '确定',
+                    onClick: () => {
+                        handler.current?.close();
+                        afterClose(true);
+                    },
+                },
+            ]],
         })
 
     }
