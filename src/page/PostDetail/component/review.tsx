@@ -6,7 +6,7 @@ import {
 } from 'antd-mobile-icons'
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { Review, UserFullInfo } from "..";
+import { converter, Review, UserFullInfo } from "..";
 import { likeReview, unlikeReview } from "../../../services/review";
 import cookie from 'react-cookies'; 
 
@@ -24,7 +24,7 @@ export function ReviewArea({
     return (<>
         {reviews.map((review, idx) =>
             <ReviewItem
-                info={review}
+                info={converter(review) as Review}
                 likedReviews={likedReviews}
                 enterUserHomePage={enterUserHomePage}
                 reviewCallback={reviewCallback}
@@ -33,7 +33,7 @@ export function ReviewArea({
                 <>
                     {review.reviewList.map((subReview, idx) =>
                         <ReviewItem
-                            info={subReview}
+                            info={converter(subReview) as Review}
                             likedReviews={likedReviews}
                             enterUserHomePage={enterUserHomePage}
                             reviewCallback={reviewCallback}

@@ -1,4 +1,4 @@
-import { List } from 'antd-mobile';
+import { List, Toast } from 'antd-mobile';
 import { memo, useEffect, useState } from 'react';
 import cookie from 'react-cookies';
 import SkeletonItem from '../../../component/SkeletonItem';
@@ -17,7 +17,7 @@ export default memo(function CommentList() {
                 setLike(res.like);
                 setLoading(false);
             } catch (err) {
-                console.log(err);
+                Toast.show(err.message);
             }
         }
         fetchData();

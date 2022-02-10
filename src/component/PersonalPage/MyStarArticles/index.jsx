@@ -1,3 +1,4 @@
+import { Toast } from 'antd-mobile';
 import React, { memo, useEffect, useState } from 'react';
 import TabPage from '../../../page/TabPage';
 import { getStaredArticles } from '../../../services/article';
@@ -14,7 +15,7 @@ export default memo(function MyStarArticle(props) {
         setStarArticles(articles)
         setLoading(false);
       } catch (err) {
-        console.log(err);
+        Toast.show(err.message);
       }
     }
     fetchData();
