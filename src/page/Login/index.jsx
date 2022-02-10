@@ -46,7 +46,11 @@ export default memo(function Login() {
                 onFinish={onFinish}
                 footer={
                     <>
-                        <p className='register' onClick={toRegister}>未注册？点击这里注册账号</p>
+                        <p className='register'>
+                            未注册？
+                            <span className='primary' onClick={toRegister}>点击这里</span>
+                            注册账号
+                        </p>
                         <Button block type='submit' color='primary' size='large'>
                             提交
                         </Button>
@@ -87,5 +91,10 @@ const LoginWrapper = styled.div`
     }
     .register {
         float: right;
+    }
+
+    .primary {
+        cursor: pointer;
+        color: var(--adm-color-primary);
     }
 `
