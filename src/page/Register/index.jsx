@@ -13,7 +13,7 @@ export default memo(function Login() {
     const [loading, setLoading] = useState('none');
     if (cookie.load('userInfo')) history.push('/tabbar');
 
-    const onFinish = async (user) => { 
+    const onFinish = async (user) => {
         setLoading('true');
         const { username, password, affirmPassword } = user;
         if (password !== affirmPassword) {
@@ -26,7 +26,7 @@ export default memo(function Login() {
                 setLoading('none')
                 Toast.show({
                     content: res.msg,
-                    afterClose: async () => { 
+                    afterClose: async () => {
                         history.replace('/#/login');
                     },
                 })
@@ -45,6 +45,11 @@ export default memo(function Login() {
                 onFinish={onFinish}
                 footer={
                     <>
+                        <p className='login'>
+                            已有账号？
+                            <span className='primary' onClick={() => history.replace('/login')}>点击这里</span>
+                            登录
+                        </p>
                         <Button block type='submit' color='primary' size='large'>
                             提交
                         </Button>
@@ -72,8 +77,8 @@ export default memo(function Login() {
                 >
                     <Input placeholder='请输入密码' value='' clearable type='password' />
                 </Form.Item>
-            </Form>
-        </LoginWrapper>
+            </Form >
+        </LoginWrapper >
     );
 });
 
@@ -95,7 +100,12 @@ const LoginWrapper = styled.div`
     .form {
         margin-top: 220px;
     }
-    .register {
+    .login {
         float: right;
+    }
+
+    .primary {
+        cursor: pointer;
+        color: var(--adm-color-primary);
     }
 `
