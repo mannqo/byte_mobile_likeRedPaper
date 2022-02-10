@@ -1,10 +1,10 @@
 import { memo, useEffect, useState } from 'react';
-import { NavBar, Space, Toast, Tabs, PullToRefresh } from 'antd-mobile';
+import { NavBar, Space, Toast, Tabs, PullToRefresh, Skeleton, Loading } from 'antd-mobile';
 import { SearchOutline, AddOutline } from 'antd-mobile-icons';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import TabPage from '../../TabPage';
-import { sleep } from 'antd-mobile/es/utils/sleep'; 
+import { sleep } from 'antd-mobile/es/utils/sleep';
 import { Article, sorter } from '../../PostDetail';
 import { getHomePageArticles } from '../../../services/article';
 
@@ -23,6 +23,7 @@ export default memo(function Homepage() {
     // State
     let [hasMore, setHasMore] = useState(true);
     let [pages, setPages] = useState<Page[]>([]);
+    let [loading, setLoading] = useState(true);
 
     // Effect
     useEffect(() => {
@@ -39,6 +40,7 @@ export default memo(function Homepage() {
             setPages(res);
             // 还原是否有更多评论的状态
             setHasMore(true);
+            setLoading(false);
         } catch (err) {
             Toast.show((err as Error).message);
         }
@@ -79,9 +81,12 @@ export default memo(function Homepage() {
             <div className='main'>
                 <PullToRefresh onRefresh={refresh}>
                     <Tabs defaultActiveKey='0'>
-                        {pages.map((page, idx) => <Tabs.Tab title={page.tag} key={idx}>
-                            <TabPage articles={page.articles} hasMore={hasMore} loadMore={loadMore.bind(null, idx)} />
-                        </Tabs.Tab>)}
+                        {loading ? (new Array(7).fill(null)).map((_, idx) => <Tabs.Tab title={<Loading />} key={idx}>
+                            <TabPage loading={true} articles={[]} hasMore={false} loadMore={loadMore.bind(null, idx)} />
+                        </Tabs.Tab>) :
+                            pages.map((page, idx) => <Tabs.Tab title={page.tag} key={idx}>
+                                <TabPage loading={false} articles={page.articles} hasMore={hasMore} loadMore={loadMore.bind(null, idx)} />
+                            </Tabs.Tab>)}
                     </Tabs>
                 </PullToRefresh>
             </div>
