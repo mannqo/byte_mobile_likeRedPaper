@@ -1,10 +1,11 @@
-import { Space, SpinLoading } from "antd-mobile";
+import { Space } from "antd-mobile";
+import { PictureWrongOutline } from "antd-mobile-icons"
 import styled from "styled-components";
 
-export default function ImagePlaceholder() {
+export default function ImageFallback() {
     return <Container>
         <Space className="loading" align="center" justify="center">
-            <SpinLoading color='primary' />
+            <PictureWrongOutline fontSize={24} />
         </Space>
     </Container>
 }

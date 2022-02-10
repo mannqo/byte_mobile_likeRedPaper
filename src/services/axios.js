@@ -55,6 +55,9 @@ export default function request(option) {
         instance(option).then(res => {
             // 业务状态码不是200也抛出异常
             // console.log(res.status);
+            if (res instanceof Error) {
+                throw res;
+            }
             if (res.status !== 200) {
                 throw new ExecuteError(res.msg, res);
             }

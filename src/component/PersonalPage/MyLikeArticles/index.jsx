@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { getLikedArticles } from '../../../services/article';
 import TabPage from '../../../page/TabPage';
+import { Toast } from 'antd-mobile';
 
 export default memo(function MyLikeArticles(props) {
     const [likeArticles, setLikeArticles] = useState([]);
@@ -15,7 +16,7 @@ export default memo(function MyLikeArticles(props) {
                 setLikeArticles(articles)
                 setLoading(false);
             } catch (err) {
-                console.log(err);
+                Toast.show(err.message);
             }
         }
         fetchData();

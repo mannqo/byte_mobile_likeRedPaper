@@ -1,4 +1,4 @@
-import { List } from 'antd-mobile'
+import { List, Toast } from 'antd-mobile'
 import { useEffect, useState } from 'react';
 import { getChatList } from '../../services/chat';
 import MessageItem from './MessageItem';
@@ -19,7 +19,7 @@ const MessageList = () => {
                 setChatList(res.chatList);
                 setLoading(false);
             } catch (err) {
-                console.log(err);
+                Toast.show(err.message);
             }
         }
         fetchData();

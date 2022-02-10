@@ -6,11 +6,10 @@ import { useHistory } from 'react-router-dom';
 import TabPage from '../../TabPage';
 import { sleep } from 'antd-mobile/es/utils/sleep';
 import { Article, sorter } from '../../PostDetail';
-import { getHomePageArticles } from '../../../services/article';
+import { getHomePageArticles, getHomePageTagArticles } from '../../../services/article';
 
-type Page = {
-    tag: string,
-    articles: Article[]
+type Pages = {
+    [tag: string]: Article[]
 }
 
 export default memo(function Homepage() {
@@ -20,9 +19,11 @@ export default memo(function Homepage() {
         history.push('/search');
     }
 
+
     // State
-    let [hasMore, setHasMore] = useState(true);
-    let [pages, setPages] = useState<Page[]>([]);
+    let [pages, setPages] = useState<Pages>({});
+    let [pageTimes, setPageTimes] = useState<{ [key: string]: number }>({});
+    let [pageMore, setPageMore] = useState<{ [key: string]: boolean }>({});
     let [loading, setLoading] = useState(true);
 
     // Effect
@@ -33,13 +34,18 @@ export default memo(function Homepage() {
     // 刷新页面
     const refresh = async () => {
         try {
-            const res = (await getHomePageArticles()).pages as Page[];
-            for (const page of res) {
-                sorter(page.articles)
+            const res = (await getHomePageArticles()).pages as Pages;
+            let times: { [key: string]: number } = {};
+            let more: { [key: string]: boolean } = {};
+            for (const tag in res) {
+                // sorter(res[tag]);
+                times[tag] = 1;
+                more[tag] = true;
             }
+            setPageTimes(times);
             setPages(res);
             // 还原是否有更多评论的状态
-            setHasMore(true);
+            setPageMore(more);
             setLoading(false);
         } catch (err) {
             Toast.show((err as Error).message);
@@ -47,9 +53,30 @@ export default memo(function Homepage() {
     }
 
     // 加载更多Article
-    const loadMore = async (tabIndex: number) => {
-        await sleep(1000);
-        setHasMore(false);
+    const loadMore = async (tag: string) => {
+        try {
+            const res = (await getHomePageTagArticles({ tag, pages: pageTimes[tag] })).articles as Article[];
+            let articles = pages[tag];
+            articles.push(...res);
+            // sorter(articles);
+            setPageTimes({
+                ...pageTimes,
+                [tag]: pageTimes[tag] + 1
+            })
+            setPages({
+                ...pages,
+                [tag]: articles
+            });
+            // 还原是否有更多评论的状态
+            if (res.length < 10) {
+                setPageMore({
+                    ...pageMore,
+                    [tag]: false
+                })
+            }
+        } catch (err) {
+            Toast.show((err as Error).message);
+        }
     }
 
     const right = (
@@ -63,6 +90,17 @@ export default memo(function Homepage() {
     // 跳转发布文章
     const gotoArticlePostPage = () => {
         history.push('/article/post');
+    }
+
+    // 页面
+    const pagTabs = [];
+    let i = 0;
+    for (let tag in pages) {
+        pagTabs.push(
+            <Tabs.Tab title={tag} key={i}>
+                <TabPage loading={false} articles={pages[tag]} hasMore={pageMore[tag]} loadMore={loadMore.bind(null, tag)} />
+            </Tabs.Tab>)
+        i++;
     }
 
     return (
@@ -82,11 +120,8 @@ export default memo(function Homepage() {
                 <PullToRefresh onRefresh={refresh}>
                     <Tabs defaultActiveKey='0'>
                         {loading ? (new Array(7).fill(null)).map((_, idx) => <Tabs.Tab title={<Loading />} key={idx}>
-                            <TabPage loading={true} articles={[]} hasMore={false} loadMore={loadMore.bind(null, idx)} />
-                        </Tabs.Tab>) :
-                            pages.map((page, idx) => <Tabs.Tab title={page.tag} key={idx}>
-                                <TabPage loading={false} articles={page.articles} hasMore={hasMore} loadMore={loadMore.bind(null, idx)} />
-                            </Tabs.Tab>)}
+                            <TabPage loading={true} articles={[]} hasMore={false} loadMore={() => { }} />
+                        </Tabs.Tab>) : pagTabs}
                     </Tabs>
                 </PullToRefresh>
             </div>

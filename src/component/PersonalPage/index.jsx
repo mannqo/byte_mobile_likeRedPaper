@@ -1,4 +1,4 @@
-import { List, Avatar, Tabs } from 'antd-mobile'
+import { List, Avatar, Tabs, Toast } from 'antd-mobile'
 import React, { memo, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import EditInfo from './EditInfo'
@@ -18,7 +18,7 @@ export default memo(function PersonalPage(props) {
                 const res = await getFullUserInfo({ userId });
                 setUserInfo(res.user);
             } catch (err) {
-                console.log(err);
+                Toast.show(err.message);
             }
         }
         fetchData();

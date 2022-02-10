@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { getArticleByAuthor } from '../../../services/article';
 import TabPage from '../../../page/TabPage';
+import { Toast } from 'antd-mobile';
 
 export default memo(function MyArticle(props) {
   const [myArticle, setMyArticle] = useState([]);
@@ -13,8 +14,8 @@ export default memo(function MyArticle(props) {
       const res = await getArticleByAuthor({ authorId });
       setMyArticle(res.articles)
       setLoading(false);
-    } catch (err) {
-        console.log(err);
+      } catch (err) {
+        Toast.show(err.message);
       }
     }
     fetchData();
