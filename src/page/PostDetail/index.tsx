@@ -23,6 +23,7 @@ import { ExecuteError } from "../../services/axios";
 import cookie from 'react-cookies';
 import ImagePlaceholder from "../../component/ImagePlaceholder";
 import ImageFallback from "../../component/ImageFallback";
+import Share from "../../component/Share";
 
 type UserInfo = {
     avatar: string,
@@ -104,6 +105,7 @@ export default function PostDetail() {
     let [stared, setStared] = useState(false);
     let [likedReviews, setLikedReviews] = useState<string[]>([]);
     let [popupVisible, setPopupVisible] = useState(false);
+    let [shareVisible, setShareVisible] = useState(false);
     let [showPostBtn, setShowPostBtn] = useState(false);
     let [inputValue, setInputValue] = useState('');
     let [hasMoreReviews, setHasMoreReviews] = useState(true);
@@ -194,7 +196,7 @@ export default function PostDetail() {
 
     // 分享按钮
     const shareBtn = () => {
-        Toast.show('分享');
+        setShareVisible(true);
     }
 
     // 关注文章作者的按钮
@@ -505,6 +507,8 @@ export default function PostDetail() {
                     </Space>
                 </PopupContainer>
             </Popup>
+            {/* 分享 */}
+            <Share visible={shareVisible} setVisible={setShareVisible} />
         </Container>
     );
 }
