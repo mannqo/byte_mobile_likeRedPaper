@@ -1,12 +1,12 @@
-import request from "./axios";
+    import request from "./axios";
 
-export function sendMessage(option) {
-    return request({
-        method: 'POST',
-        url: '/chat/send',
-        data: option
-    })
-}
+    export function sendMessage(option) {
+        return request({
+            method: 'POST',
+            url: '/chat/send',
+            data: option
+        })
+    }
 
 export function getChatList(option) {
     return request({

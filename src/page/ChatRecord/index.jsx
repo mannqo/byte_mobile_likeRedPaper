@@ -10,7 +10,7 @@ import cookie from 'react-cookies';
 import { sendMessage } from '../../services/chat';
 
 import io from 'socket.io-client';
-const socket = io.connect('ws://localhost:8080/chat');
+const socket = io.connect('ws://101.33.245.208:8080/chat');
 
 let reachTop = false;
 export default function ChatRecord() {

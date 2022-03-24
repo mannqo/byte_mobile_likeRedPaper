@@ -1,4 +1,6 @@
+import { Toast } from 'antd-mobile';
 import axios from 'axios'
+import cookie from 'react-cookies';
 
 export class ExecuteError extends Error {
     constructor(msg, res) {
@@ -19,15 +21,14 @@ export default function request(option) {
             }
         })
         instance.defaults.withCredentials = true;
-        instance.defaults.headers.post['Content-Type'] = 'application/json'
-
+        instance.defaults.headers.post['Content-Type'] = 'application/json';
         // 拦截器
         instance.interceptors.request.use(config => {
-            if (sessionStorage.getItem('identity')) {
-                const token = JSON.parse(sessionStorage.getItem('identity')).token
-                config.headers['token'] = `${token}`
+            if (config.url !== '/login' && localStorage.getItem('token')) {
+                const token = localStorage.getItem('token');
+                config.headers['authorization'] = 'Bearer ' + token;
             } else {
-                delete config.headers['token']
+                delete config.headers['authorization']
             }
             return config
         }, err => {
@@ -36,14 +37,21 @@ export default function request(option) {
         instance.interceptors.response.use(response => {
             return response.data
         }, err => {
-            // console.log('response err', err);
             if (err && err.response) {
                 switch (err.response.status) {
                     case 400:
                         err.message = '请求错误'
                         break
                     case 401:
-                        err.message = '未授权的访问'
+                        err.message = '登录过期，请重新登录'
+                        Toast.show({
+                            title: '登录过期，请重新登录',
+                            afterClose: () => {
+                                localStorage.removeItem('token');
+                                cookie.remove('userInfo');
+                                window.replace('/login');
+                            }
+                        })
                         break
                     default:
                         err.message = "其他错误信息"
@@ -63,6 +71,7 @@ export default function request(option) {
             }
             resolve(res)
         }).catch(err => {
+            console.log(err);
             reject(err)
         })
     })

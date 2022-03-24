@@ -21,8 +21,7 @@ export default memo(function CommentList() {
             }
         }
         fetchData();
-    }, [userId]) 
-
+    }, [userId])  
     return (
         <List>
             {loading ? (new Array(3).fill(null)).map((_, idx) => <SkeletonItem key={idx} />) :

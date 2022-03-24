@@ -15,12 +15,12 @@ export default memo(function PersonalCenter() {
             content: '确认登出吗',
             onConfirm: async () => {
                 try {
-                    const res = await logout({ userId });
-                    console.log(res);
+                    await logout({ userId });
                     Toast.show({
                         icon: 'success',
                         content: '登出成功',
                     })
+                    localStorage.removeItem('token');
                     cookie.remove('userInfo');
                     history.push('/');
                 } catch (err) {

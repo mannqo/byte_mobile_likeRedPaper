@@ -41,8 +41,7 @@ export default memo(function UploadAvatar() {
                     <Image
                         src={avatarUrl}
                         width={100}
-                        height={100}
-
+                        height={100} 
                         fit='cover'
                         style={{
                             borderRadius: '50%',

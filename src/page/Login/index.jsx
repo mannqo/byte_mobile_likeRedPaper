@@ -6,9 +6,6 @@ import { useHistory } from 'react-router-dom';
 import { getFullUserInfo } from '../../services/users';
 import cookie from 'react-cookies';
 
-
-
-
 export default memo(function Login() {
     const history = useHistory();
     if (cookie.load('userInfo')) history.push('/tabbar');
@@ -16,10 +13,10 @@ export default memo(function Login() {
     const onFinish = async (user) => {
         try {
             const res = await login(user);
-            console.log(res);
+            localStorage.setItem('token', res.token)
             Toast.show({
                 content: res.msg,
-                afterClose: async () => {
+                afterClose: async () => { 
                     const userInfo = await getFullUserInfo({ userId: res.userId });
                     cookie.save('userInfo', userInfo.user);
                     history.push('/tabbar');
