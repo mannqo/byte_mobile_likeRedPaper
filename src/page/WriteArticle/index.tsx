@@ -9,6 +9,7 @@ import cookie from 'react-cookies';
 import { postArticle } from "../../services/article";
 import { ExecuteError } from "../../services/axios";
 import { DialogShowRef } from "antd-mobile/es/components/dialog";
+import { compressImg } from "../../utils/compressImg";
 
 export default function WriteArticle() {
     const history = useHistory();
@@ -37,9 +38,11 @@ export default function WriteArticle() {
     }
 
     // 上传图片
-    const imageUpload = async (file: File) => {
+    const imageUpload = async (file: File) => { 
+        // compressImg
+        const res = await compressImg(file, 0.2) 
         const data = new FormData();
-        data.append('image', file, file.name);
+        data.append('image', res.file, res.file.name);
         return (await uploadImage(data)) as ImageUploadItem;
     }
 
@@ -158,7 +161,7 @@ export default function WriteArticle() {
     )
 
     return <Container>
-        <NavBar onBack={history.goBack} > </NavBar>
+        <NavBar onBack={history.goBack} />
         <div className="main">
             <ImageUploader
                 className="images"

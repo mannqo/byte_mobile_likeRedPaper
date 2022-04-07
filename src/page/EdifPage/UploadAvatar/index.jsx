@@ -3,6 +3,7 @@ import { Image, Toast } from 'antd-mobile'
 import styled from 'styled-components';
 import cookie from 'react-cookies';
 import { upload } from '../../../services/users';
+import { compressImg } from '../../../utils/compressImg';
 
 
 export default memo(function UploadAvatar() {
@@ -13,13 +14,14 @@ export default memo(function UploadAvatar() {
         const formdata = new FormData();
         const userInfo = cookie.load('userInfo');
         const { userId } = userInfo;
-        formdata.append('avatar', file, file.name);
+        const compressRes = await compressImg(file, 0.2);
+        formdata.append('avatar', compressRes.file, compressRes.file.name);
         formdata.append('userId', Number(userId));
         try {
             const res = await upload(formdata);
             const { avatar, msg } = res;
             setAvatarUrl(avatar);
-            cookie.save('userInfo', { ...userInfo, avatar }); 
+            cookie.save('userInfo', { ...userInfo, avatar });
             Toast.show({
                 icon: 'success',
                 content: msg,
@@ -41,7 +43,7 @@ export default memo(function UploadAvatar() {
                     <Image
                         src={avatarUrl}
                         width={100}
-                        height={100} 
+                        height={100}
                         fit='cover'
                         style={{
                             borderRadius: '50%',
