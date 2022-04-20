@@ -1,6 +1,6 @@
 import { Button, Dialog, Input, NavBar, Space, Tag, TextArea, Toast } from "antd-mobile";
 import ImageUploader, { ImageUploadItem } from "antd-mobile/es/components/image-uploader";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { revertUploadImage, uploadImage } from "../../services/upload";
@@ -29,7 +29,7 @@ export default function WriteArticle() {
     // 上传之前的检查
     const beforeUpload = (files: File[]) => {
         return files.filter(file => {
-            if (file.size > 10 * 1024 * 1024) {
+            if (file.size > 50 * 1024 * 1024) {
                 Toast.show('请选择小于 10M 的图片');
                 return false;
             }
@@ -38,12 +38,14 @@ export default function WriteArticle() {
     }
 
     // 上传图片
-    const imageUpload = async (file: File) => { 
+    const imageUpload = async (file: File) => {
         // compressImg
-        const res = await compressImg(file, 0.2) 
-        const data = new FormData();
+        const res = await compressImg(file, 0.2)
+        const data = new FormData(); 
         data.append('image', res.file, res.file.name);
+        console.log(fileList);
         return (await uploadImage(data)) as ImageUploadItem;
+        // return { url: res.afterSrc };
     }
 
     // 撤销上传图片
